@@ -1,7 +1,6 @@
 package base;
 
 public abstract class Figure extends PrintableObject {
-    protected String name;
 
     public Figure(String name) {
         this.name = name;

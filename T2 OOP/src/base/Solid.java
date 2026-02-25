@@ -1,7 +1,6 @@
 package base;
 
 public abstract class Solid extends PrintableObject {
-    protected String name;
 
     public Solid(String name) {
         this.name = name;

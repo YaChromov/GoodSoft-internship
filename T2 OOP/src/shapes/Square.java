@@ -10,6 +10,10 @@ public class Square extends Figure {
         this.side = side;
     }
 
+    private boolean isValid() {
+        return side > 0;
+    }
+
     @Override
     public double area() {
         return side * side;

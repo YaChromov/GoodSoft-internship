@@ -17,7 +17,7 @@ public class Triangle extends Figure {
     }
 
     private boolean isValid() {
-        return (a + b > c) && (a + c > b) && (b + c > a);
+        return a > 0 && b > 0 && c > 0 && (a + b > c) && (a + c > b) && (b + c > a);
     }
 
     @Override
@@ -27,7 +27,6 @@ public class Triangle extends Figure {
 
     @Override
     public double area() {
-        // Формула Герона
         double p = perimeter() / 2;
         return Math.sqrt(p * (p - a) * (p - b) * (p - c));
     }
