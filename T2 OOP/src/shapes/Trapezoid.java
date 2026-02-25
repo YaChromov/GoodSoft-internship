@@ -16,6 +16,10 @@ public class Trapezoid extends Figure {
         this.side1 = side1;
         this.side2 = side2;
         this.height = height;
+
+        if (!isValid()) {
+            throw new IllegalArgumentException("Трапеция с такими сторонами не существует");
+        }
     }
 
     private boolean isValid() {

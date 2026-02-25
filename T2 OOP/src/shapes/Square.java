@@ -8,6 +8,10 @@ public class Square extends Figure {
     public Square(double side) {
         super("квадрат");
         this.side = side;
+
+        if (!isValid()) {
+            throw new IllegalArgumentException("Квадрат с такими сторонами не существует");
+        }
     }
 
     private boolean isValid() {
