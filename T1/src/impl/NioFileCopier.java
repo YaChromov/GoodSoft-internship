@@ -1,3 +1,7 @@
+package impl;
+
+import interfaces.FileCopier;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

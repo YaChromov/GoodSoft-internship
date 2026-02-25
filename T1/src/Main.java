@@ -1,3 +1,7 @@
+import impl.IoFileCopier;
+import impl.Nio2FileCopier;
+import impl.NioFileCopier;
+import interfaces.FileCopier;
 
 void main(String[] args) {
 
@@ -16,8 +20,24 @@ void main(String[] args) {
     return;
   }
 
-  System.out.println("Cпособ: 1-IO, 2-NIO, 3-NIO2");
-  int choice = scanner.nextInt();
+
+  int choice;
+
+  while (true) {
+    System.out.println("Способ: 1-IO, 2-NIO, 3-NIO2");
+
+    if (scanner.hasNextInt()) {
+      choice = scanner.nextInt();
+      if (choice >= 1 && choice <= 3) {
+        break;
+      } else {
+        System.out.println("Ошибка: введите число от 1 до 3");
+      }
+    } else {
+      System.out.println("Ошибка: введите число!");
+      scanner.next();
+    }
+  }
 
   FileCopier copier;
 

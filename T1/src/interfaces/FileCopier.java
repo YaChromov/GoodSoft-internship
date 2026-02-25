@@ -1,3 +1,5 @@
+package interfaces;
+
 import java.io.*;
 import java.nio.file.*;
 public interface FileCopier {
