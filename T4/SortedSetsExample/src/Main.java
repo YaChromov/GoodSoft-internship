@@ -19,11 +19,11 @@ public class Main {
         IO.println("\n===============================================");
 
         Set<Person> personSet = new TreeSet<>();
-        personSet.add(new Person("Анна", 25));
+        personSet.add(new Person("Анна", 22));
         personSet.add(new Person("Иван", 30));
         personSet.add(new Person("Мария", 22));
-        personSet.add(new Person("Пётр", 28));
-        personSet.add(new Person("Елена", 27));
+        personSet.add(new Person("Пётр", 23));
+        personSet.add(new Person("Елена", 22));
 
        IO.println("\nОтсортированное множество Person (по возрасту):");
         for (Person p : personSet) {

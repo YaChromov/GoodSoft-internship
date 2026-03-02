@@ -13,6 +13,15 @@ import java.io.IOException;
 @WebServlet("*.jhtml")
 public class DispatcherServlet extends HttpServlet {
 
+    private static final String LOGIN = "/login.jhtml";
+    private static final String WELCOME = "/welcome.jhtml";
+    private static final String LOGIN_EDIT = "/loginedit.jhtml";
+
+    private static final String LOGIN_PATH = "/WEB-INF/jsp/login.jsp";
+    private static final String WELCOME_PATH = "/WEB-INF/jsp/welcome.jsp";
+    private static final String LOGIN_EDIT_PATH = "/WEB-INF/jsp/loginedit.jsp";
+
+
     private final SecurityService securityService = new SecurityService();
 
     @Override
@@ -21,11 +30,11 @@ public class DispatcherServlet extends HttpServlet {
         String contextPath = req.getContextPath();
         String action = req.getParameter("action");
 
-        if ("/login.jhtml".equals(path)) {
+        if (LOGIN.equals(path)) {
             handleLogin(req, resp, contextPath, action);
-        } else if ("/welcome.jhtml".equals(path)) {
+        } else if (WELCOME.equals(path)) {
             handleWelcome(req, resp, contextPath);
-        } else if ("/loginedit.jhtml".equals(path)) {
+        } else if (LOGIN_EDIT.equals(path)) {
             handleEditPassword(req, resp, contextPath, action);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -34,6 +43,16 @@ public class DispatcherServlet extends HttpServlet {
 
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp, String contextPath, String action)
             throws ServletException, IOException {
+
+        if ("POST".equalsIgnoreCase(req.getMethod()) && "logout".equals(action)) {
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            resp.sendRedirect(contextPath + LOGIN);
+            return;
+        }
+
         if ("POST".equalsIgnoreCase(req.getMethod()) && "login".equals(action)) {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
@@ -42,18 +61,18 @@ public class DispatcherServlet extends HttpServlet {
             if (user != null) {
                 HttpSession session = req.getSession();
                 session.setAttribute("user", user);
-                resp.sendRedirect(contextPath + "/welcome.jhtml");
+                resp.sendRedirect(contextPath + WELCOME);
                 return;
             } else {
                 req.setAttribute("errorMessage", "Неверный логин или пароль");
             }
         }
-        req.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(req, resp);
+        req.getRequestDispatcher(LOGIN_PATH).forward(req, resp);
     }
 
     private void handleWelcome(HttpServletRequest req, HttpServletResponse resp, String contextPath)
             throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/jsp/welcome.jsp").forward(req, resp);
+        req.getRequestDispatcher(WELCOME_PATH).forward(req, resp);
     }
 
     private void handleEditPassword(HttpServletRequest req, HttpServletResponse resp, String contextPath, String action)
@@ -69,6 +88,6 @@ public class DispatcherServlet extends HttpServlet {
                 req.setAttribute("errorMessage", "Ошибка смены пароля");
             }
         }
-        req.getRequestDispatcher("/WEB-INF/jsp/loginedit.jsp").forward(req, resp);
+        req.getRequestDispatcher(LOGIN_EDIT_PATH).forward(req, resp);
     }
 }

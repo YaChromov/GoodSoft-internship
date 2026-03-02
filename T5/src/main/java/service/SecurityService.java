@@ -9,7 +9,6 @@ public class SecurityService {
 
     public User authenticate(String login, String password) {
 
-        User newUser = new User(login, password);
         if (Objects.equals(hardUser.getLogin(), login) && Objects.equals(hardUser.getPassword(), password)){
             return hardUser;
         }
