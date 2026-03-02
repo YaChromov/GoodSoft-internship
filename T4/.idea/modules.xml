@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/LIstExample/LIstExample.iml" filepath="$PROJECT_DIR$/LIstExample/LIstExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MapExample/MapExample.iml" filepath="$PROJECT_DIR$/MapExample/MapExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SetExample/SetExample.iml" filepath="$PROJECT_DIR$/SetExample/SetExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SortedMapsExample/SortedMapsExample.iml" filepath="$PROJECT_DIR$/SortedMapsExample/SortedMapsExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SortedSetsExample/SortedSetsExample.iml" filepath="$PROJECT_DIR$/SortedSetsExample/SortedSetsExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/T4.iml" filepath="$PROJECT_DIR$/T4.iml" />
+    </modules>
+  </component>
+</project>
