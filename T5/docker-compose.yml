@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    container_name: tomcat25_maven4
+    ports:
+      - "8080:8080"
+    restart: always
