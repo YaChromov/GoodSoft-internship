@@ -20,7 +20,7 @@ public class DispatcherServlet extends HttpServlet {
         String path = req.getServletPath();
         String contextPath = req.getContextPath();
         String action = req.getParameter("action");
-        
+
         if ("/login.jhtml".equals(path)) {
             handleLogin(req, resp, contextPath, action);
         } else if ("/welcome.jhtml".equals(path)) {
