@@ -1,8 +1,8 @@
-package model;
+package dto.Request;
 
 import java.time.LocalDate;
 
-public class User {
+public class UserRequest {
     private String login;
     private String password;
     private String email;
@@ -10,27 +10,11 @@ public class User {
     private String name;
     private String patronymic;
     private LocalDate birthday;
-    private Role role;
+    private model.User.Role role;
 
-    public User() {
+    public UserRequest() {
     }
 
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
-
-    public User(String login, String password, String email, String surname,
-                String name, String patronymic, LocalDate birthday, Role role) {
-        this.login = login;
-        this.password = password;
-        this.email = email;
-        this.surname = surname;
-        this.name = name;
-        this.patronymic = patronymic;
-        this.birthday = birthday;
-        this.role = role;
-    }
 
     public String getLogin() {
         return login;
@@ -88,11 +72,11 @@ public class User {
         this.birthday = birthday;
     }
 
-    public Role getRole() {
+    public model.User.Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(model.User.Role role) {
         this.role = role;
     }
 
