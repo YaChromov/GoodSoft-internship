@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-
         header {
             padding: 30px 60px;
             display: flex;
@@ -55,7 +54,7 @@
             border: 1px solid #a1a1a1;
             box-shadow: 10px 10px 20px #d9d9d9, -10px -10px 20px #ffffff;
             width: 300px;
-            z-index: 1; /* Чтобы быть над перекрестием */
+            z-index: 1;
         }
 
         .login-card h2 {
@@ -105,7 +104,6 @@
             background: #fff;
         }
 
-
         .submit-btn {
             width: 100%;
             padding: 12px;
@@ -122,7 +120,6 @@
             background: linear-gradient(#ddd, #bbb);
             color: #000;
         }
-
 
         footer {
             margin: 20px 60px;
@@ -151,7 +148,6 @@
         </c:if>
 
         <form action="${pageContext.request.contextPath}/login.jhtml" method="post">
-            <input type="hidden" name="action" value="login">
 
             <div class="form-group">
                 <label>ЛОГИН</label>

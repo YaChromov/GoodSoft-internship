@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <title>Регистрация пользователя</title>
     <style>
-        /* --- Базовые стили --- */
         body {
             display: flex;
             flex-direction: column;
@@ -197,7 +196,6 @@
     <div class="form-card">
         <h2>Регистрация пользователя</h2>
 
-        <%-- Вывод сообщения об ошибке из сервлета --%>
         <c:if test="${not empty errorMessage}">
             <div class="error-banner">
                 ${errorMessage}
@@ -205,7 +203,6 @@
         </c:if>
 
         <form action="${pageContext.request.contextPath}/useradd.jhtml" method="post">
-            <input type="hidden" name="action" value="create">
 
             <div class="form-row">
                 <div class="form-group">

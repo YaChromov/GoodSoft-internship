@@ -13,7 +13,16 @@ import model.User;
 public class UserRepository {
 private final HashMap<String, User> userMap = new HashMap<>();
 
-public UserRepository(){
+    private static UserRepository instance;
+
+    public static synchronized UserRepository getInstance() {
+        if (instance == null) {
+            instance = new UserRepository();
+        }
+        return instance;
+    }
+
+private UserRepository(){
     User hardUser = new User("user", "user", "bobe@mail.ru", "Иванов", "Иван","Иваныч", LocalDate.of(2024, 1, 15), User.Role.USER);
     User hardAdmin = new User("admin", "admin", "email@mail.ru", "ANO", "NY", "M", LocalDate.of(2024, 1, 15), User.Role.ADMIN);
     userMap.put(hardUser.getLogin(), hardUser);

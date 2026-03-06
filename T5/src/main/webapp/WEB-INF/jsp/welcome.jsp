@@ -114,8 +114,7 @@
     <div class="logo">XPOM</div>
     <div class="user-info">
         Привет, <a href="${pageContext.request.contextPath}/loginedit.jhtml"><strong>${sessionScope.user.login}</strong></a>.
-        <form action="${pageContext.request.contextPath}/login.jhtml" method="post" style="display:inline;">
-            <input type="hidden" name="action" value="logout">
+        <form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
             <button type="submit" class="logout-btn">Выйти</button>
         </form>
     </div>
@@ -123,11 +122,10 @@
 
 <nav>
     <div class="nav-links">
-        <a href="#">Главная</a>
+        <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
 
-        <%-- Кнопка появится только для администратора!!! 🫠--%>
         <c:if test="${sessionScope.user.role == 'ADMIN'}">
-            <a href="userlist.jhtml">Пользователи</a>
+            <a href="${pageContext.request.contextPath}/userlist.jhtml">Пользователи</a>
         </c:if>
     </div>
 </nav>

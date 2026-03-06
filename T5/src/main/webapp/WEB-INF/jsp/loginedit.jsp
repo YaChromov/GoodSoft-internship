@@ -18,7 +18,6 @@
             min-height: 100vh;
         }
 
-        /* Шапка */
         header {
             padding: 30px 60px;
             display: flex;
@@ -39,7 +38,6 @@
             box-shadow: 2px 2px 5px #bebebe;
         }
 
-
         nav {
             margin: 0 60px;
             padding: 12px 20px;
@@ -55,7 +53,6 @@
             font-weight: 600;
         }
 
-
         main {
             flex: 1;
             margin: 20px 60px;
@@ -68,7 +65,6 @@
                 linear-gradient(to top right, transparent 49.7%, #f5f5f5 49.7%, #f5f5f5 50.3%, transparent 50.3%),
                 linear-gradient(to top left, transparent 49.7%, #f5f5f5 49.7%, #f5f5f5 50.3%, transparent 50.3%);
         }
-
 
         .edit-card {
             background: linear-gradient(145deg, #ffffff, #e6e6e6);
@@ -120,7 +116,6 @@
             background: #fafafa;
         }
 
-        /* Кнопки */
         .btn-group {
             display: flex;
             flex-direction: column;
@@ -151,7 +146,6 @@
             color: #333;
             text-decoration: underline;
         }
-
 
         footer {
             margin: 20px 60px;
@@ -186,7 +180,6 @@
         </c:if>
 
         <form action="${pageContext.request.contextPath}/loginedit.jhtml" method="post">
-            <input type="hidden" name="action" value="changePassword">
 
             <div class="form-group">
                 <label>СТАРЫЙ ПАРОЛЬ</label>
@@ -199,7 +192,7 @@
             </div>
 
             <div class="btn-group">
-                <input type="submit" value="Изменить" class="submit-btn">
+                <button type="submit" class="submit-btn">Изменить</button>
                 <a href="${pageContext.request.contextPath}/welcome.jhtml" class="back-link">Отмена / На главную</a>
             </div>
         </form>

@@ -27,6 +27,7 @@
 
         .logo {
             padding: 12px 40px;
+            font-size: 266px;
             font-size: 26px;
             font-weight: 900;
             letter-spacing: 2px;
@@ -83,6 +84,18 @@
             padding-bottom: 10px;
         }
 
+        .error-banner {
+            margin-bottom: 20px;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #b00;
+            text-align: center;
+            background-color: #fee;
+            border: 1px solid #f88;
+            border-radius: 4px;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -117,6 +130,12 @@
             background: #fdfdfd;
         }
 
+        .form-group input[readonly] {
+            background-color: #f9f9f9;
+            color: #777;
+            cursor: not-allowed;
+        }
+
         .btn-save {
             width: 100%;
             padding: 14px;
@@ -133,7 +152,6 @@
             background: linear-gradient(#ddd, #bbb);
             box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
         }
-
 
         .back-link {
             display: block;
@@ -175,12 +193,22 @@
     <div class="form-card">
         <h2>Редактирование данных</h2>
 
-        <form action="${pageContext.request.contextPath}/useredit.jhtml" method="post">
 
+        <c:if test="${not empty errors or not empty error}">
+            <div class="error-banner">
+                <c:choose>
+                    <c:when test="${not empty error}">${error}</c:when>
+                    <c:otherwise>Данные не валидны. Проверьте правильность заполнения.</c:otherwise>
+                </c:choose>
+            </div>
+        </c:if>
+
+        <form action="${pageContext.request.contextPath}/useredit.jhtml" method="post">
             <div class="form-row">
                 <div class="form-group">
                     <label>Логин</label>
-                    <input type="text" name="login" value="${user.login}" required>
+                    <%-- Логин обычно не меняется, поэтому readonly --%>
+                    <input type="text" name="login" value="${user.login}" required readonly>
                 </div>
                 <div class="form-group">
                     <label>Роль</label>
@@ -220,7 +248,6 @@
             </div>
 
             <button type="submit" class="btn-save">Сохранить изменения</button>
-
             <a href="userlist.jhtml" class="back-link">Отмена</a>
         </form>
     </div>

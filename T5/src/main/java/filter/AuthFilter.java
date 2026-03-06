@@ -16,7 +16,8 @@ public class AuthFilter implements Filter {
     private final List<String> userAllowedPaths = List.of(
             "/welcome.jhtml",
             "/loginedit.jhtml",
-            "/login.jhtml"
+            "/login.jhtml",
+            "/logout.jhtml"
     );
 
     @Override

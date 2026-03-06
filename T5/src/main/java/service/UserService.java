@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class UserService {
 
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository = UserRepository.getInstance();
     private final UserMapper userMapper = new UserMapper();
 
 
@@ -40,18 +40,16 @@ public class UserService {
         return userMapper.toResponseList(users);
     }
 
-    public void updateUser(UserRequest userRequest) {
+    public void updateUserData(UserRequest userRequest) {
         if (userRequest != null && userRequest.getLogin() != null) {
             userRepository.updateUser(userMapper.toEntity(userRequest));
         }
     }
 
-    public boolean deleteUser(String login){
+    public void deleteUser(String login){
         if(userRepository.findUserByLogin(login) != null){
             userRepository.deleteUser(findUserByLogin(login));
-            return true;
         }
-        else return false;
     }
 
     public boolean addUser(UserRequest userRequest) {

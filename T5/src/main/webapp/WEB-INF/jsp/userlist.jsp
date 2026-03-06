@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <title>Список пользователей</title>
     <style>
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -75,6 +76,19 @@
                 linear-gradient(to top left, transparent 49.9%, #f9f9f9 49.9%, #f9f9f9 50.1%, transparent 50.1%);
         }
 
+
+        .error-banner {
+            margin-bottom: 20px;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #b00;
+            text-align: center;
+            background-color: #fee;
+            border: 1px solid #f88;
+            border-radius: 4px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -101,13 +115,8 @@
             font-size: 13px;
         }
 
-        tr:nth-child(even) {
-            background-color: #f8f8f8;
-        }
-
-        tr:hover {
-            background-color: #f0f0f0;
-        }
+        tr:nth-child(even) { background-color: #f8f8f8; }
+        tr:hover { background-color: #f0f0f0; }
 
         .action-btn {
             text-decoration: none;
@@ -138,7 +147,6 @@
 
 <header>
     <div class="logo">XPOM</div>
-    <%-- Используем sessionScope, чтобы всегда видеть текущего админа --%>
     <div style="font-size: 13px; color: #666;">
         Авторизован: <strong>${sessionScope.user.login}</strong>
     </div>
@@ -146,13 +154,20 @@
 
 <nav>
     <t:nav />
-    <a href="useradd.jhtml" class="btn-add">+ Добавить пользователя</a>
+    <a href="${pageContext.request.contextPath}/useradd.jhtml" class="btn-add">+ Добавить пользователя</a>
 </nav>
 
 <main>
     <h2 style="text-transform: uppercase; font-size: 18px; color: #555; margin-bottom: 20px;">
         Реестр учетных записей
     </h2>
+
+
+    <c:if test="${not empty errorMessage}">
+        <div class="error-banner">
+            ${errorMessage}
+        </div>
+    </c:if>
 
     <table>
         <thead>
@@ -175,8 +190,10 @@
                     <td><small>${u.role}</small></td>
                     <td>
 
-                        <a href="useredit.jhtml?login=${u.login}" class="action-btn edit-btn">Изменить</a>
-                        <a href="userlist.jhtml?login=${u.login}" class="action-btn del-btn"
+                        <a href="${pageContext.request.contextPath}/useredit.jhtml?id=${u.login}" class="action-btn edit-btn">Изменить</a>
+
+
+                        <a href="${pageContext.request.contextPath}/userlist.jhtml?login=${u.login}" class="action-btn del-btn"
                            onclick="return confirm('Вы уверены, что хотите удалить пользователя ${u.login}?')">
                            Удалить
                         </a>
