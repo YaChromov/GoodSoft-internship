@@ -71,9 +71,4 @@ public class UserResponse {
         public void setRole(model.User.Role role) {
             this.role = role;
         }
-
-        public enum Role {
-            ADMIN,
-            USER
-        }
     }

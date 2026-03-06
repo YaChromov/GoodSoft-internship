@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -89,7 +90,6 @@
             text-align: center;
             font-size: 12px;
             color: #777;
-            text-transform: lowercase;
         }
 
         .logout-btn {
@@ -125,7 +125,7 @@
     <div class="nav-links">
         <a href="#">Главная</a>
 
-        <%-- Кнопка появится только для администратора --%>
+        <%-- Кнопка появится только для администратора!!! 🫠--%>
         <c:if test="${sessionScope.user.role == 'ADMIN'}">
             <a href="userlist.jhtml">Пользователи</a>
         </c:if>
@@ -136,9 +136,7 @@
     <h2>🫠</h2>
 </main>
 
-<footer>
-    by Chromov 2026
-</footer>
+<t:footer />
 
 </body>
 </html>

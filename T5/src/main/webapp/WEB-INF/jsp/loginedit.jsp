@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -173,7 +174,6 @@
 <nav>
     <div class="nav-links">
         <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
-        <a href="#">Пользователи</a>
     </div>
 </nav>
 
@@ -206,9 +206,7 @@
     </div>
 </main>
 
-<footer>
-    by Chromov 2026
-</footer>
+<t:footer />
 
 </body>
 </html>

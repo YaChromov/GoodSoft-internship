@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -144,10 +145,7 @@
 </header>
 
 <nav>
-    <div class="nav-links">
-        <a href="welcome.jhtml">Главная</a>
-        <a href="userlist.jhtml" style="color: #000;">Пользователи</a>
-    </div>
+    <t:nav />
     <a href="useradd.jhtml" class="btn-add">+ Добавить пользователя</a>
 </nav>
 
@@ -197,9 +195,7 @@
     </table>
 </main>
 
-<footer>
-    by Chromov 2026
-</footer>
+<t:footer />
 
 </body>
 </html>

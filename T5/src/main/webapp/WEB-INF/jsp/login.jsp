@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -167,9 +168,7 @@
     </div>
 </main>
 
-<footer>
-    by Chromov 2026
-</footer>
+<t:footer />
 
 </body>
 </html>

@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import mapper.UserMapper;
 import model.ValidationResult;
-import service.SecurityService;
+import service.UserService;
 import model.User;
 import validator.UserValidator;
 
@@ -35,7 +35,7 @@ public class DispatcherServlet extends HttpServlet {
     private static final String USER_EDIT_PATH = "/WEB-INF/jsp/useredit.jsp";
 
 
-    private final SecurityService securityService = new SecurityService();
+    private final UserService userService = new UserService();
     private final UserMapper userMapper = new UserMapper();
     private final UserValidator userValidator = new UserValidator();
 
@@ -78,7 +78,7 @@ public class DispatcherServlet extends HttpServlet {
             String login = req.getParameter("login");
             String password = req.getParameter("password");
 
-            User user = securityService.authenticate(login, password);
+            User user = userService.authenticate(login, password);
             if (user != null) {
                 HttpSession session = req.getSession();
                 session.setAttribute("user", user);
@@ -106,7 +106,7 @@ public class DispatcherServlet extends HttpServlet {
 
             if (loginToEdit != null && !loginToEdit.isBlank()) {
 
-                User user = securityService.findUserByLogin(loginToEdit);
+                User user = userService.findUserByLogin(loginToEdit);
                 req.setAttribute("user", user);
             }
 
@@ -117,7 +117,7 @@ public class DispatcherServlet extends HttpServlet {
                 ValidationResult validationResult = userValidator.validate(userRequest);
 
                 if(validationResult.isValid()) {
-                    securityService.updateUser(userRequest);
+                    userService.updateUser(userRequest);
                     resp.sendRedirect(req.getContextPath() + USER_LIST);
                     return;
                 }
@@ -147,13 +147,13 @@ public class DispatcherServlet extends HttpServlet {
             if (currentUser != null && currentUser.getLogin().equals(loginToDelete)) {
                 req.setAttribute("errorMessage", "Вы не можете удалить свою учетную запись!");
             } else {
-                securityService.deleteUser(loginToDelete);
+                userService.deleteUser(loginToDelete);
                 resp.sendRedirect(contextPath + USER_LIST);
                 return;
             }
         }
 
-        List<UserResponse> users = securityService.getUserList();
+        List<UserResponse> users = userService.getUserList();
         req.setAttribute("userList", users);
 
         req.getRequestDispatcher(USER_LIST_PATH).forward(req, resp);
@@ -168,7 +168,7 @@ public class DispatcherServlet extends HttpServlet {
             ValidationResult validationResult = userValidator.validate(userRequest);
 
             if (validationResult.isValid()) {
-                boolean isAdded = securityService.addUser(userRequest);
+                boolean isAdded = userService.addUser(userRequest);
                 if (isAdded) {
                     resp.sendRedirect(contextPath + USER_LIST);
                     return;
@@ -192,7 +192,7 @@ public class DispatcherServlet extends HttpServlet {
             String oldPassword = req.getParameter("oldPassword");
             String newPassword = req.getParameter("newPassword");
             User user = (User) req.getSession().getAttribute("user");
-            if (user != null && securityService.changePassword(user.getLogin(), oldPassword, newPassword)) {
+            if (user != null && userService.changePassword(user.getLogin(), oldPassword, newPassword)) {
                 resp.sendRedirect(contextPath + "/welcome.jhtml?message=passwordChanged");
                 return;
             } else {

@@ -9,7 +9,7 @@ import model.User;
 import java.util.List;
 import java.util.Objects;
 
-public class SecurityService {
+public class UserService {
 
     private final UserRepository userRepository = new UserRepository();
     private final UserMapper userMapper = new UserMapper();
