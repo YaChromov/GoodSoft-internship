@@ -1,6 +1,7 @@
 package controller;
 
 import dto.Request.UserRequest;
+import factory.ServiceFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 @WebServlet({"/useradd.jhtml", "/useredit.jhtml"})
 public class UserEditController extends HttpServlet {
-    private final UserService userService = UserService.getInstance();
+    private final UserService userService = ServiceFactory.getInstance().getUserService();
     private final UserMapper userMapper = new UserMapper();
     private final UserValidator userValidator = new UserValidator();
 

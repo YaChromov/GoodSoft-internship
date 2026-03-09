@@ -3,6 +3,7 @@ package service;
 import dao.UserRepository;
 import dto.Request.UserRequest;
 import dto.Response.UserResponse;
+import factory.RepositoryFactory;
 import mapper.UserMapper;
 import model.User;
 
@@ -11,7 +12,7 @@ import java.util.Objects;
 
 public class UserService {
 
-    private final UserRepository userRepository = UserRepository.getInstance();
+    private final UserRepository userRepository = RepositoryFactory.getInstance().getUserRepository();
     private final UserMapper userMapper = new UserMapper();
 
     private static UserService instance;

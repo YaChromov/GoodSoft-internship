@@ -1,6 +1,7 @@
 package controller;
 
 import dto.Response.UserResponse;
+import factory.ServiceFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @WebServlet("/userlist.jhtml")
 public class UserListController extends HttpServlet {
-    private final UserService userService = UserService.getInstance();
+    private final UserService userService = ServiceFactory.getInstance().getUserService();
     private static final String USER_LIST_PATH = "/WEB-INF/jsp/userlist.jsp";
     private static final String USER_LIST = "/userlist.jhtml";
 
