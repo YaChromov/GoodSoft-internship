@@ -1,6 +1,5 @@
 package factory;
 
-import dao.UserRepository;
 import service.UserService;
 
 public class ServiceFactory {
