@@ -14,6 +14,18 @@ public class UserService {
     private final UserRepository userRepository = UserRepository.getInstance();
     private final UserMapper userMapper = new UserMapper();
 
+    private static UserService instance;
+
+    private UserService(){
+    }
+
+    public static synchronized UserService getInstance() {
+        if (instance == null) {
+            instance = new UserService();
+        }
+        return instance;
+    }
+
 
     public User authenticate(String login, String password) {
         User user = userRepository.findUserByLogin(login);

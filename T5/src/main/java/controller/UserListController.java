@@ -14,7 +14,7 @@ import java.util.List;
 
 @WebServlet("/userlist.jhtml")
 public class UserListController extends HttpServlet {
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
     private static final String USER_LIST_PATH = "/WEB-INF/jsp/userlist.jsp";
     private static final String USER_LIST = "/userlist.jhtml";
 

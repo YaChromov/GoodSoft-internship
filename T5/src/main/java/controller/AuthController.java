@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @WebServlet({"/login.jhtml", "/logout.jhtml", "/loginedit.jhtml"})
 public class AuthController extends HttpServlet {
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();;
     private static final String LOGIN_PATH = "/WEB-INF/jsp/login.jsp";
     private static final String LOGIN_EDIT_PATH = "/WEB-INF/jsp/loginedit.jsp";
     private static final String LOGIN = "/login.jhtml";

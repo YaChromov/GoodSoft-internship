@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @WebServlet({"/useradd.jhtml", "/useredit.jhtml"})
 public class UserEditController extends HttpServlet {
-    private final UserService userService = new UserService();
+    private final UserService userService = UserService.getInstance();
     private final UserMapper userMapper = new UserMapper();
     private final UserValidator userValidator = new UserValidator();
 
