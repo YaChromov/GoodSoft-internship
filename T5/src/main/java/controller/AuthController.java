@@ -45,6 +45,7 @@ public class AuthController extends HttpServlet {
         }
     }
 
+    // -----
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp, String contextPath)
             throws ServletException, IOException {
 

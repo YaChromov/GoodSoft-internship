@@ -1,7 +1,11 @@
 package dto.Response;
 
 
+import model.Role;
+
 import java.time.LocalDate;
+import java.util.List;
+
 
 public class UserResponse {
         private String login;
@@ -10,7 +14,7 @@ public class UserResponse {
         private String name;
         private String patronymic;
         private LocalDate birthday;
-        private model.User.Role role;
+        private List<String> roles;
 
         public UserResponse() {
         }
@@ -64,11 +68,11 @@ public class UserResponse {
             this.birthday = birthday;
         }
 
-        public model.User.Role getRole() {
-            return role;
+        public List<String> getRoles() {
+            return roles;
         }
 
-        public void setRole(model.User.Role role) {
-            this.role = role;
+        public void setRoles(List<String> roles) {
+            this.roles = roles;
         }
     }

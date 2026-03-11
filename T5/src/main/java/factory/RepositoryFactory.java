@@ -1,12 +1,14 @@
 package factory;
 
 
+import dao.RoleRepository;
 import dao.UserRepository;
 
 public class RepositoryFactory {
         private static RepositoryFactory instance;
 
         private UserRepository userRepository;
+        private RoleRepository roleRepository;
 
         private RepositoryFactory() {}
 
@@ -24,4 +26,10 @@ public class RepositoryFactory {
             return userRepository;
         }
 
+        public RoleRepository getRoleRepository() {
+            if (roleRepository == null) {
+            roleRepository = RoleRepository.getInstance();
+            }
+        return roleRepository;
+        }
 }

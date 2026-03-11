@@ -2,9 +2,9 @@ package dao;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import model.Role;
 import model.User;
 // pov создал временную затычку, чтобы заложить фундамент работы с СУБД по всем канонам MVC
 //ps прекрасно знаю про принципы DRY KISS YAGNI и тд
@@ -23,8 +23,10 @@ private final HashMap<String, User> userMap = new HashMap<>();
     }
 
 private UserRepository(){
-    User hardUser = new User("user", "user", "bobe@mail.ru", "Иванов", "Иван","Иваныч", LocalDate.of(2024, 1, 15), User.Role.USER);
-    User hardAdmin = new User("admin", "admin", "email@mail.ru", "ANO", "NY", "M", LocalDate.of(2024, 1, 15), User.Role.ADMIN);
+    Role roleUser = new Role(1L, "USER");
+    Role roleAdmin = new Role(2L, "ADMIN");
+    User hardUser = new User("user", "user", "bobe@mail.ru", "Иванов", "Иван","Иваныч", LocalDate.of(2024, 1, 15), new HashSet<>(Set.of(roleUser)));
+    User hardAdmin = new User("admin", "admin", "email@mail.ru", "ANO", "NY", "M", LocalDate.of(2024, 1, 15), new HashSet<>(Set.of(roleUser, roleAdmin)));
     userMap.put(hardUser.getLogin(), hardUser);
     userMap.put(hardAdmin.getLogin(), hardAdmin);
 }

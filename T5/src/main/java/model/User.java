@@ -2,6 +2,10 @@ package model;
 
 import java.time.LocalDate;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
 public class User {
     private String login;
     private String password;
@@ -10,18 +14,22 @@ public class User {
     private String name;
     private String patronymic;
     private LocalDate birthday;
-    private Role role;
+
+    // Теперь это множество объектов нового класса Role
+    private Set<Role> roles;
 
     public User() {
+        this.roles = new HashSet<>();
     }
 
     public User(String login, String password) {
         this.login = login;
         this.password = password;
+        this.roles = new HashSet<>();
     }
 
     public User(String login, String password, String email, String surname,
-                String name, String patronymic, LocalDate birthday, Role role) {
+                String name, String patronymic, LocalDate birthday, Set<Role> roles) {
         this.login = login;
         this.password = password;
         this.email = email;
@@ -29,7 +37,7 @@ public class User {
         this.name = name;
         this.patronymic = patronymic;
         this.birthday = birthday;
-        this.role = role;
+        this.roles = roles != null ? roles : new HashSet<>();
     }
 
     public String getLogin() {
@@ -88,16 +96,19 @@ public class User {
         this.birthday = birthday;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
-    public enum Role {
-        ADMIN,
-        USER
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
     }
 }

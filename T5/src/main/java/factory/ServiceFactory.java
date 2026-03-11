@@ -1,11 +1,13 @@
 package factory;
 
+import service.RoleService;
 import service.UserService;
 
 public class ServiceFactory {
     private static ServiceFactory instance;
 
     private UserService userService;
+    private RoleService roleService;
 
     private ServiceFactory() {}
 
@@ -21,6 +23,13 @@ public class ServiceFactory {
             userService = UserService.getInstance();
         }
         return userService;
+    }
+
+    public RoleService getRoleService(){
+        if (roleService == null){
+            roleService = RoleService.getInstance();
+        }
+        return roleService;
     }
 
 }

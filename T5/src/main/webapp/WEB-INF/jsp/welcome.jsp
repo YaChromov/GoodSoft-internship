@@ -6,22 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Главная</title>
+    <%-- Ваши стили остаются без изменений --%>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0; /* Светлый фон */
+            background-color: #f0f0f0;
             color: #333;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-        }
-
-        .metal-border {
-            border: 1px solid #a1a1a1;
-            background: linear-gradient(145deg, #ffffff, #dcdcdc);
-            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff;
         }
 
         header {
@@ -124,7 +119,15 @@
     <div class="nav-links">
         <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
 
-        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+        <%-- ИСПРАВЛЕННЫЙ БЛОК: Проверяем наличие роли ADMIN в коллекции roles --%>
+        <c:set var="isAdmin" value="false" />
+        <c:forEach var="role" items="${sessionScope.user.roles}">
+            <c:if test="${role.name eq 'ADMIN'}">
+                <c:set var="isAdmin" value="true" />
+            </c:if>
+        </c:forEach>
+
+        <c:if test="${isAdmin}">
             <a href="${pageContext.request.contextPath}/userlist.jhtml">Пользователи</a>
         </c:if>
     </div>

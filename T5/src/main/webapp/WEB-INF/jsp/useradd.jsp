@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -36,7 +36,6 @@
             box-shadow: 2px 2px 5px #bbb;
         }
 
-        /* --- Навигация --- */
         nav {
             margin: 0 60px;
             padding: 12px 20px;
@@ -56,7 +55,6 @@
             color: #000;
         }
 
-
         main {
             display: flex;
             flex: 1;
@@ -70,7 +68,6 @@
                 linear-gradient(to top left, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%);
             border: 1px solid #ccc;
         }
-
 
         .form-card {
             z-index: 1;
@@ -92,7 +89,6 @@
             border-bottom: 1px solid #bbb;
         }
 
-
         .error-banner {
             margin-bottom: 20px;
             padding: 12px;
@@ -104,7 +100,6 @@
             border: 1px solid #f88;
             border-radius: 4px;
         }
-
 
         .form-row {
             display: grid;
@@ -141,6 +136,26 @@
             background: #fdfdfd;
         }
 
+        .roles-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #bbb;
+        }
+
+        .role-checkbox {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .role-checkbox input {
+            width: auto !important;
+            margin-right: 8px;
+        }
 
         .btn-submit {
             width: 100%;
@@ -169,7 +184,6 @@
             text-decoration: none;
         }
 
-        /* --- Футер --- */
         footer {
             margin: 0 60px 20px 60px;
             padding: 15px;
@@ -216,6 +230,25 @@
             </div>
 
             <div class="form-group">
+                <label>Права доступа (Роли)</label>
+                <div class="roles-selection">
+                    <c:forEach var="roleName" items="${allRoles}">
+                        <label class="role-checkbox">
+                            <c:set var="checked" value="false" />
+                            <%-- Проверяем массив выбранных ролей в параметрах --%>
+                            <c:forEach var="pRole" items="${paramValues.roles}">
+                                <c:if test="${pRole eq roleName}">
+                                    <c:set var="checked" value="true" />
+                                </c:if>
+                            </c:forEach>
+                            <input type="checkbox" name="roles" value="${roleName}" ${checked ? 'checked' : ''}>
+                            ${roleName}
+                        </label>
+                    </c:forEach>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label>Фамилия</label>
                 <input type="text" name="surname" value="${param.surname}" placeholder="Иванов">
             </div>
@@ -240,13 +273,6 @@
                 <div class="form-group">
                     <label>Дата рождения</label>
                     <input type="date" name="birthday" value="${param.birthday}">
-                </div>
-                <div class="form-group">
-                    <label>Роль в системе</label>
-                    <select name="role">
-                        <option value="USER" ${param.role == 'USER' ? 'selected' : ''}>User (Пользователь)</option>
-                        <option value="ADMIN" ${param.role == 'ADMIN' ? 'selected' : ''}>Admin (Администратор)</option>
-                    </select>
                 </div>
             </div>
 

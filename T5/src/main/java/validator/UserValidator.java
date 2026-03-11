@@ -26,7 +26,7 @@ public class UserValidator {
             result.addError("birthday", "Дата не может быть в будущем");
         }
 
-        if (request.getRole() == null) {
+        if (request.getRoles() == null || request.getRoles().isEmpty()) {
             result.addError("role", "Роль обязательна");
         }
 

@@ -1,18 +1,22 @@
 package service;
 
+import dao.RoleRepository;
 import dao.UserRepository;
 import dto.Request.UserRequest;
 import dto.Response.UserResponse;
 import factory.RepositoryFactory;
 import mapper.UserMapper;
+import model.Role;
 import model.User;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class UserService {
 
     private final UserRepository userRepository = RepositoryFactory.getInstance().getUserRepository();
+    private final RoleRepository roleRepository = RepositoryFactory.getInstance().getRoleRepository();
     private final UserMapper userMapper = new UserMapper();
 
     private static UserService instance;
@@ -44,8 +48,8 @@ public class UserService {
         else return false;
     }
 
-    public User findUserByLogin(String login){
-        return userRepository.findUserByLogin(login);
+    public UserResponse findUserByLogin(String login){
+        return userMapper.toResponse(userRepository.findUserByLogin(login));
     }
 
     public List<UserResponse> getUserList(){
@@ -53,24 +57,34 @@ public class UserService {
         return userMapper.toResponseList(users);
     }
 
-    public void updateUserData(UserRequest userRequest) {
+    public void updateUserData(UserRequest userRequest, String currentUserLogin) {
         if (userRequest != null && userRequest.getLogin() != null) {
-            userRepository.updateUser(userMapper.toEntity(userRequest));
+            Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
+
+            if (userRequest.getLogin().equals(currentUserLogin)) {
+                Role adminRole = roleRepository.findByName("ADMIN");
+                if (adminRole != null) {
+                    roles.add(adminRole);
+                }
+            }
+
+            userRepository.updateUser(userMapper.toEntity(userRequest, roles));
         }
     }
 
     public void deleteUser(String login){
         if(userRepository.findUserByLogin(login) != null){
-            userRepository.deleteUser(findUserByLogin(login));
+            userRepository.deleteUser(userRepository.findUserByLogin(login));
         }
     }
 
     public boolean addUser(UserRequest userRequest) {
+        Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
 
         if (userRepository.findUserByLogin(userRequest.getLogin()) != null) {
             return false;
         }
-        else {userRepository.addUser(userMapper.toEntity(userRequest));
+        else {userRepository.addUser(userMapper.toEntity(userRequest, roles));
             return true;
         }
     }

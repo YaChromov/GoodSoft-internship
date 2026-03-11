@@ -1,6 +1,7 @@
 package controller;
 
 import dto.Request.UserRequest;
+import dto.Response.UserResponse;
 import factory.ServiceFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,14 +11,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import mapper.UserMapper;
 import model.User;
 import model.ValidationResult;
+import service.RoleService;
 import service.UserService;
 import validator.UserValidator;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet({"/useradd.jhtml", "/useredit.jhtml"})
 public class UserEditController extends HttpServlet {
     private final UserService userService = ServiceFactory.getInstance().getUserService();
+    private final RoleService roleService = ServiceFactory.getInstance().getRoleService();
     private final UserMapper userMapper = new UserMapper();
     private final UserValidator userValidator = new UserValidator();
 
@@ -42,30 +46,33 @@ public class UserEditController extends HttpServlet {
     private void handleUserEdit(HttpServletRequest req, HttpServletResponse resp, String contextPath)
             throws ServletException, IOException {
 
+        List<String> allRoleNames = roleService.getAllRoleNames();
+        req.setAttribute("allRoles", allRoleNames);
         String method = req.getMethod();
 
-        if ("GET".equalsIgnoreCase(method)) {
-            String loginToEdit = req.getParameter("id");
-
-            if (loginToEdit != null && !loginToEdit.isBlank()) {
-
-                User user = userService.findUserByLogin(loginToEdit);
-                req.setAttribute("user", user);
-            }
+        if ("GET".equalsIgnoreCase(req.getMethod())) {
+            String login = req.getParameter("id");
+            UserResponse user = userService.findUserByLogin(login);
+            req.setAttribute("user", user);
 
             req.getRequestDispatcher(USER_EDIT_PATH).forward(req, resp);
+
         } else if ("POST".equalsIgnoreCase(method)) {
             try {
                 UserRequest userRequest = userMapper.mapToRequest(req);
                 ValidationResult validationResult = userValidator.validate(userRequest);
 
                 if(validationResult.isValid()) {
-                    userService.updateUserData(userRequest);
+                    User currentUser = (User) req.getSession().getAttribute("user");
+                    String currentUserLogin = (currentUser != null) ? currentUser.getLogin() : null;
+
+                    userService.updateUserData(userRequest, currentUserLogin);
+
                     resp.sendRedirect(req.getContextPath() + USER_LIST);
                     return;
                 }
                 else {
-                    validationResult.addError("login", "ДАнные не валидны");
+                    validationResult.addError("login", "Данные не валидны");
                 }
                 req.setAttribute("errors", validationResult.getErrors());
                 req.setAttribute("user", userRequest);
@@ -81,6 +88,9 @@ public class UserEditController extends HttpServlet {
 
     private void handleUserAdd(HttpServletRequest req, HttpServletResponse resp, String contextPath)
             throws ServletException, IOException {
+
+        List<String> allRoleNames = roleService.getAllRoleNames();
+        req.setAttribute("allRoles", allRoleNames);
 
         if ("POST".equalsIgnoreCase(req.getMethod())) {
             UserRequest userRequest = userMapper.mapToRequest(req);

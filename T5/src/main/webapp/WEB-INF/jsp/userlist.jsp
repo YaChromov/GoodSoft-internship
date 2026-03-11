@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <title>Список пользователей</title>
     <style>
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -76,7 +75,6 @@
                 linear-gradient(to top left, transparent 49.9%, #f9f9f9 49.9%, #f9f9f9 50.1%, transparent 50.1%);
         }
 
-
         .error-banner {
             margin-bottom: 20px;
             padding: 12px;
@@ -117,6 +115,31 @@
 
         tr:nth-child(even) { background-color: #f8f8f8; }
         tr:hover { background-color: #f0f0f0; }
+
+        /* Стили для ролей */
+        .role-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .role-badge-admin {
+            border-color: #d9534f;
+            color: #d9534f;
+            background: #fff1f0;
+        }
 
         .action-btn {
             text-decoration: none;
@@ -162,7 +185,6 @@
         Реестр учетных записей
     </h2>
 
-
     <c:if test="${not empty errorMessage}">
         <div class="error-banner">
             ${errorMessage}
@@ -176,7 +198,7 @@
                 <th>ФИО</th>
                 <th>Email</th>
                 <th>Дата рожд.</th>
-                <th>Роль</th>
+                <th>Роли</th>
                 <th style="width: 150px;">Действия</th>
             </tr>
         </thead>
@@ -187,11 +209,18 @@
                     <td>${u.surname} ${u.name} ${u.patronymic}</td>
                     <td>${u.email}</td>
                     <td>${u.birthday}</td>
-                    <td><small>${u.role}</small></td>
                     <td>
-
+                        <div class="role-container">
+                            <%-- Перебираем список ролей (List<String>) --%>
+                            <c:forEach var="r" items="${u.roles}">
+                                <span class="role-badge ${r eq 'ADMIN' ? 'role-badge-admin' : ''}">
+                                    ${r}
+                                </span>
+                            </c:forEach>
+                        </div>
+                    </td>
+                    <td>
                         <a href="${pageContext.request.contextPath}/useredit.jhtml?id=${u.login}" class="action-btn edit-btn">Изменить</a>
-
 
                         <a href="${pageContext.request.contextPath}/userlist.jhtml?login=${u.login}" class="action-btn del-btn"
                            onclick="return confirm('Вы уверены, что хотите удалить пользователя ${u.login}?')">

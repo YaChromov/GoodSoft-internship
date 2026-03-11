@@ -27,7 +27,6 @@
 
         .logo {
             padding: 12px 40px;
-            font-size: 266px;
             font-size: 26px;
             font-weight: 900;
             letter-spacing: 2px;
@@ -42,13 +41,6 @@
             border-top: 1px solid #999;
             border-bottom: 1px solid #999;
             background: #e8e8e8;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #444;
-            margin-right: 30px;
-            font-weight: 600;
         }
 
         main {
@@ -115,7 +107,7 @@
             text-transform: uppercase;
         }
 
-        .form-group input, .form-group select {
+        .form-group input {
             width: 100%;
             padding: 10px;
             border: 1px solid #bbb;
@@ -124,16 +116,28 @@
             font-size: 14px;
         }
 
-        .form-group input:focus {
-            border-color: #444;
-            outline: none;
-            background: #fdfdfd;
+        /* Стили для блока выбора ролей */
+        .roles-container {
+            background: #fff;
+            border: 1px solid #bbb;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .form-group input[readonly] {
-            background-color: #f9f9f9;
-            color: #777;
-            cursor: not-allowed;
+        .role-option {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .role-option input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
         }
 
         .btn-save {
@@ -150,7 +154,6 @@
 
         .btn-save:hover {
             background: linear-gradient(#ddd, #bbb);
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
         }
 
         .back-link {
@@ -160,11 +163,6 @@
             color: #888;
             text-align: center;
             text-decoration: none;
-        }
-
-        .back-link:hover {
-            color: #444;
-            text-decoration: underline;
         }
 
         footer {
@@ -193,7 +191,6 @@
     <div class="form-card">
         <h2>Редактирование данных</h2>
 
-
         <c:if test="${not empty errors or not empty error}">
             <div class="error-banner">
                 <c:choose>
@@ -207,15 +204,37 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Логин</label>
-                    <%-- Логин обычно не меняется, поэтому readonly --%>
                     <input type="text" name="login" value="${user.login}" required readonly>
                 </div>
-                <div class="form-group">
-                    <label>Роль</label>
-                    <select name="role">
-                        <option value="USER" ${user.role == 'USER' ? 'selected' : ''}>User</option>
-                        <option value="ADMIN" ${user.role == 'ADMIN' ? 'selected' : ''}>Admin</option>
-                    </select>
+            </div>
+
+            <div class="form-group">
+                <label>Доступные права доступа (роли)</label>
+                <div class="roles-container">
+                    <c:forEach var="roleName" items="${allRoles}">
+                        <label class="role-option">
+                            <c:set var="checked" value="false" />
+                            <c:forEach var="userRole" items="${user.roles}">
+                                <c:if test="${userRole eq roleName}">
+                                    <c:set var="checked" value="true" />
+                                </c:if>
+                            </c:forEach>
+
+
+                            <c:set var="isDisabled" value="${sessionScope.user.login eq user.login and roleName eq 'ADMIN'}" />
+
+                            <input type="checkbox" name="roles" value="${roleName}"
+                                   ${checked ? 'checked' : ''}
+                                   ${isDisabled ? 'disabled' : ''}>
+                            ${roleName}
+
+                            <c:if test="${isDisabled}">
+
+                                <input type="hidden" name="roles" value="${roleName}">
+
+                            </c:if>
+                        </label>
+                    </c:forEach>
                 </div>
             </div>
 
@@ -248,7 +267,7 @@
             </div>
 
             <button type="submit" class="btn-save">Сохранить изменения</button>
-            <a href="userlist.jhtml" class="back-link">Отмена</a>
+            <a href="${pageContext.request.contextPath}/userlist.jhtml" class="back-link">Отмена</a>
         </form>
     </div>
 </main>

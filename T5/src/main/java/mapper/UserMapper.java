@@ -3,16 +3,17 @@ package mapper;
 import dto.Request.UserRequest;
 import dto.Response.UserResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import model.Role;
 import model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserMapper {
 
-    public User toEntity(UserRequest dto) {
+    public User toEntity(UserRequest dto, Set<Role> roles) {
         if (dto == null) {
             return null;
         }
@@ -26,7 +27,7 @@ public class UserMapper {
         user.setName(dto.getName());
         user.setPatronymic(dto.getPatronymic());
         user.setBirthday(dto.getBirthday());
-        user.setRole(dto.getRole());
+        user.setRoles(roles != null ? roles : new HashSet<>());
 
         return user;
     }
@@ -48,15 +49,10 @@ public class UserMapper {
                 IO.println(e);
             }
         }
-
-
-        String roleStr = req.getParameter("role");
-        if (roleStr != null && !roleStr.isBlank()) {
-            try {
-                userRequest.setRole(User.Role.valueOf(roleStr));
-            } catch (IllegalArgumentException e) {
-                IO.println(e);
-            }
+        
+        String[] roleNames = req.getParameterValues("roles");
+        if (roleNames != null) {
+            userRequest.setRoles(Arrays.asList(roleNames));
         }
 
         return userRequest;
@@ -76,7 +72,13 @@ public class UserMapper {
         response.setName(user.getName());
         response.setPatronymic(user.getPatronymic());
         response.setBirthday(user.getBirthday());
-        response.setRole(user.getRole());
+        if (user.getRoles() != null) {
+            List<String> rolesList = user.getRoles().stream()
+                    .map(Role::getName)
+                    .sorted()
+                    .collect(Collectors.toList());
+            response.setRoles(rolesList);
+        }
 
         return response;
     }
