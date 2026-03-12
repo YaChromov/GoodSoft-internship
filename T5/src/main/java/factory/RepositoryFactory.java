@@ -1,14 +1,14 @@
 package factory;
 
 
-import dao.RoleRepository;
-import dao.UserRepository;
+import dao.impl.RoleRepositoryImpl;
+import dao.impl.UserRepositoryImpl;
 
 public class RepositoryFactory {
         private static RepositoryFactory instance;
 
-        private UserRepository userRepository;
-        private RoleRepository roleRepository;
+        private UserRepositoryImpl userRepositoryImpl;
+        private RoleRepositoryImpl roleRepositoryImpl;
 
         private RepositoryFactory() {}
 
@@ -19,17 +19,17 @@ public class RepositoryFactory {
             return instance;
         }
 
-        public UserRepository getUserRepository() {
-            if (userRepository == null) {
-                userRepository = UserRepository.getInstance();
+        public UserRepositoryImpl getUserRepository() {
+            if (userRepositoryImpl == null) {
+                userRepositoryImpl = UserRepositoryImpl.getInstance();
             }
-            return userRepository;
+            return userRepositoryImpl;
         }
 
-        public RoleRepository getRoleRepository() {
-            if (roleRepository == null) {
-            roleRepository = RoleRepository.getInstance();
+        public RoleRepositoryImpl getRoleRepository() {
+            if (roleRepositoryImpl == null) {
+            roleRepositoryImpl = RoleRepositoryImpl.getInstance();
             }
-        return roleRepository;
+        return roleRepositoryImpl;
         }
 }

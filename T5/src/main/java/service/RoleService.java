@@ -1,6 +1,6 @@
 package service;
 
-import dao.RoleRepository;
+import dao.impl.RoleRepositoryImpl;
 import factory.RepositoryFactory;
 import model.Role;
 
@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RoleService {
-    private final RoleRepository roleRepository = RepositoryFactory.getInstance().getRoleRepository();
+    private final RoleRepositoryImpl roleRepositoryImpl = RepositoryFactory.getInstance().getRoleRepository();
 
     private static RoleService instance;
 
@@ -22,7 +22,7 @@ public class RoleService {
     }
 
     public List<String> getAllRoleNames() {
-        return roleRepository.getAllRoles().stream()
+        return roleRepositoryImpl.getAllRoles().stream()
                 .map(Role::getName)
                 .sorted()
                 .toList();
@@ -31,7 +31,7 @@ public class RoleService {
     public Set<Role> getRolesByNames(String[] names) {
         if (names == null) return Collections.emptySet();
         return Arrays.stream(names)
-                .map(roleRepository::findByName)
+                .map(roleRepositoryImpl::findByName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }

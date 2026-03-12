@@ -1,7 +1,7 @@
 package service;
 
-import dao.RoleRepository;
-import dao.UserRepository;
+import dao.impl.RoleRepositoryImpl;
+import dao.impl.UserRepositoryImpl;
 import dto.Request.UserRequest;
 import dto.Response.UserResponse;
 import factory.RepositoryFactory;
@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class UserService {
 
-    private final UserRepository userRepository = RepositoryFactory.getInstance().getUserRepository();
-    private final RoleRepository roleRepository = RepositoryFactory.getInstance().getRoleRepository();
+    private final UserRepositoryImpl userRepositoryImpl = RepositoryFactory.getInstance().getUserRepository();
+    private final RoleRepositoryImpl roleRepositoryImpl = RepositoryFactory.getInstance().getRoleRepository();
     private final UserMapper userMapper = new UserMapper();
 
     private static UserService instance;
@@ -33,7 +33,7 @@ public class UserService {
 
 
     public User authenticate(String login, String password) {
-        User user = userRepository.findUserByLogin(login);
+        User user = userRepositoryImpl.findUserByLogin(login);
         if ((user != null) && Objects.equals(user.getPassword(), password)){
             return user;
         }
@@ -41,50 +41,51 @@ public class UserService {
     }
 
     public boolean changePassword(String login, String oldPassword, String newPassword) {
-        if(Objects.equals(userRepository.findUserByLogin(login).getPassword(),oldPassword)){
-            userRepository.updateUserPassword(userRepository.findUserByLogin(login), newPassword);
+        if(Objects.equals(userRepositoryImpl.findUserByLogin(login).getPassword(),oldPassword)){
+            userRepositoryImpl.updateUserPassword(userRepositoryImpl.findUserByLogin(login), newPassword);
             return true;
         }
         else return false;
     }
 
     public UserResponse findUserByLogin(String login){
-        return userMapper.toResponse(userRepository.findUserByLogin(login));
+        return userMapper.toResponse(userRepositoryImpl.findUserByLogin(login));
     }
 
     public List<UserResponse> getUserList(){
-        List<User>users = userRepository.getAllUsers();
+        List<User>users = userRepositoryImpl.getAllUsers();
         return userMapper.toResponseList(users);
     }
 
     public void updateUserData(UserRequest userRequest, String currentUserLogin) {
         if (userRequest != null && userRequest.getLogin() != null) {
-            Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
+            Set<Role> roles = roleRepositoryImpl.findRolesByNames(userRequest.getRoles());
 
             if (userRequest.getLogin().equals(currentUserLogin)) {
-                Role adminRole = roleRepository.findByName("ADMIN");
+                Role adminRole = roleRepositoryImpl.findByName("ADMIN");
                 if (adminRole != null) {
                     roles.add(adminRole);
                 }
             }
 
-            userRepository.updateUser(userMapper.toEntity(userRequest, roles));
+            userRepositoryImpl.updateUser(userMapper.toEntity(userRequest, roles));
         }
     }
 
     public void deleteUser(String login){
-        if(userRepository.findUserByLogin(login) != null){
-            userRepository.deleteUser(userRepository.findUserByLogin(login));
+        if(userRepositoryImpl.findUserByLogin(login) != null){
+            userRepositoryImpl.deleteUser(userRepositoryImpl.findUserByLogin(login));
         }
     }
 
     public boolean addUser(UserRequest userRequest) {
-        Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
+        Set<Role> roles = roleRepositoryImpl.findRolesByNames(userRequest.getRoles());
 
-        if (userRepository.findUserByLogin(userRequest.getLogin()) != null) {
+        if (userRepositoryImpl.findUserByLogin(userRequest.getLogin()) != null) {
             return false;
         }
-        else {userRepository.addUser(userMapper.toEntity(userRequest, roles));
+        else {
+            userRepositoryImpl.addUser(userMapper.toEntity(userRequest, roles));
             return true;
         }
     }

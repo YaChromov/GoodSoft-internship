@@ -14,8 +14,6 @@ public class User {
     private String name;
     private String patronymic;
     private LocalDate birthday;
-
-    // Теперь это множество объектов нового класса Role
     private Set<Role> roles;
 
     public User() {
