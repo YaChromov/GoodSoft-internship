@@ -73,8 +73,9 @@ public class UserService {
     }
 
     public void deleteUser(String login){
-        if(userRepositoryImpl.findUserByLogin(login) != null){
-            userRepositoryImpl.deleteUser(userRepositoryImpl.findUserByLogin(login));
+        User user = userRepositoryImpl.findUserByLogin(login);
+        if(user != null){
+            userRepositoryImpl.deleteUser(user);
         }
     }
 

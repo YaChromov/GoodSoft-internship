@@ -14,6 +14,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     private static final String SELECT_BY_NAME = "SELECT id, name FROM roles WHERE UPPER(name) = ?";
     private static final String INSERT_ROLE = "INSERT INTO roles (name) VALUES (?) ON CONFLICT (name) DO NOTHING";
     private static final String SELECT_ALL = "SELECT id, name FROM roles";
+    private static final String SELECT_ANY = "SELECT id, name FROM roles WHERE UPPER(name) = ANY(?)";
 
     public static synchronized RoleRepositoryImpl getInstance() {
         if (instance == null) {
@@ -73,9 +74,29 @@ public class RoleRepositoryImpl implements RoleRepository {
         if (names == null || names.isEmpty()) {
             return Collections.emptySet();
         }
-        return names.stream()
-                .map(this::findByName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        Set<Role> roles = new HashSet<>();
+
+        try (Connection conn = ConnectionManager.open();
+             PreparedStatement ps = conn.prepareStatement(SELECT_ANY)) {
+            String[] namesArray = names.stream()
+                    .filter(Objects::nonNull)
+                    .map(String::toUpperCase)
+                    .toArray(String[]::new);
+
+            java.sql.Array sqlArray = conn.createArrayOf("VARCHAR", namesArray);
+            ps.setArray(1, sqlArray);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    roles.add(new Role(
+                            rs.getLong("id"),
+                            rs.getString("name")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при пакетном поиске ролей", e);
+        }
+        return roles;
     }
 }
