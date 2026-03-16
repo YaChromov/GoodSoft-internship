@@ -20,14 +20,15 @@ import java.util.Set;
 @Service
 public class UserService {
 
-    private final UserMapper userMapper = new UserMapper();
+    private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    @Autowired // Необязательно, если конструктор один
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    @Autowired
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
     }
 
 

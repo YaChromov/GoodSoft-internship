@@ -5,6 +5,7 @@ import org.example.t5s.dto.Request.UserRequest;
 import org.example.t5s.dto.Response.UserResponse;
 import org.example.t5s.model.Role;
 import org.example.t5s.model.User;
+import org.springframework.stereotype.Component;
 
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class UserMapper {
 
     public User toEntity(UserRequest dto, Set<Role> roles) {

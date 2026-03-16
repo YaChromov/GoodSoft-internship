@@ -2,11 +2,12 @@ package org.example.t5s.validator;
 
 import org.example.t5s.dto.Request.UserRequest;
 import org.example.t5s.model.ValidationResult;
+import org.springframework.stereotype.Component;
 
 
 import java.time.LocalDate;
 
-
+@Component
 public class UserValidator {
 
     public ValidationResult validate(UserRequest request) {

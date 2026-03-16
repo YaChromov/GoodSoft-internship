@@ -25,8 +25,8 @@ import java.util.List;
 public class UserEditController extends HttpServlet {
     private final UserService userService;
     private final RoleService roleService;
-    private final UserMapper userMapper = new UserMapper();
-    private final UserValidator userValidator = new UserValidator();
+    private final UserMapper userMapper;
+    private final UserValidator userValidator;
 
     private static final String USER_ADD_PATH = "/WEB-INF/jsp/useradd.jsp";
     private static final String USER_EDIT_PATH = "/WEB-INF/jsp/useredit.jsp";
@@ -35,9 +35,11 @@ public class UserEditController extends HttpServlet {
     private static final String USER_EDIT = "/useredit.jhtml";
 
     @Autowired
-    public UserEditController(UserService userService, RoleService roleService){
+    public UserEditController(UserService userService, RoleService roleService, UserMapper userMapper, UserValidator userValidator){
         this.userService = userService;
         this.roleService = roleService;
+        this.userMapper = userMapper;
+        this.userValidator = userValidator;
     }
 
     @Override
