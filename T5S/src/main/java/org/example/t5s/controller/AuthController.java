@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.t5s.model.User;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class AuthController extends HttpServlet {
     private static final String WELCOME = "/welcome.jhtml";
 
     @Autowired
-    public AuthController(UserService userService){
+    public AuthController(@Lazy UserService userService){
         this.userService = userService;
     }
 

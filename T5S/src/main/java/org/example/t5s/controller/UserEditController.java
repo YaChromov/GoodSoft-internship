@@ -15,6 +15,7 @@ import org.example.t5s.service.RoleService;
 import org.example.t5s.service.UserService;
 import org.example.t5s.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 
@@ -35,7 +36,7 @@ public class UserEditController extends HttpServlet {
     private static final String USER_EDIT = "/useredit.jhtml";
 
     @Autowired
-    public UserEditController(UserService userService, RoleService roleService, UserMapper userMapper, UserValidator userValidator){
+    public UserEditController(@Lazy UserService userService,@Lazy RoleService roleService,@Lazy UserMapper userMapper,@Lazy UserValidator userValidator){
         this.userService = userService;
         this.roleService = roleService;
         this.userMapper = userMapper;

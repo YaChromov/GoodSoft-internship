@@ -3,7 +3,6 @@ package org.example.t5s.service;
 
 import org.example.t5s.dao.RoleRepository;
 import org.example.t5s.dao.UserRepository;
-import org.example.t5s.dao.impl.UserRepositoryImpl;
 import org.example.t5s.dto.Request.UserRequest;
 
 import org.example.t5s.dto.Response.UserResponse;

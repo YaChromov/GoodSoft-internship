@@ -11,6 +11,7 @@ import org.example.t5s.dto.Response.UserResponse;
 import org.example.t5s.model.User;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 
@@ -25,7 +26,7 @@ public class UserListController extends HttpServlet {
 
 
     @Autowired
-    public UserListController(UserService userService) {
+    public UserListController(@Lazy UserService userService) {
         this.userService = userService;
     }
 

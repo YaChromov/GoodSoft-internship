@@ -13,7 +13,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myuser -d t5s_db"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d mydatabase"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -28,6 +28,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin  # Добавь эту строку
     depends_on:
       - db
 
@@ -43,3 +45,4 @@ services:
 
 volumes:
   pgdata:
+  pgadmin_data:
