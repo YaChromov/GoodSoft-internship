@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -89,8 +91,7 @@
             font-weight: bold;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="password"] {
+        .form-group input {
             width: 100%;
             padding: 10px;
             box-sizing: border-box;
@@ -147,20 +148,19 @@
             <div class="error-message">${errorMessage}</div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/login.jhtml" method="post">
-
+        <form:form action="${pageContext.request.contextPath}/login.jhtml" method="post" modelAttribute="loginForm">
             <div class="form-group">
                 <label>ЛОГИН</label>
-                <input type="text" name="login" required>
+                <form:input path="login" required="required" />
             </div>
 
             <div class="form-group">
                 <label>ПАРОЛЬ</label>
-                <input type="password" name="password" required>
+                <form:password path="password" required="required" />
             </div>
 
-            <input type="submit" value="Войти" class="submit-btn">
-        </form>
+            <button type="submit" class="submit-btn">Войти</button>
+        </form:form>
     </div>
 </main>
 

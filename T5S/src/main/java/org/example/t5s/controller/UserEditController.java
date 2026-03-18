@@ -1,133 +1,87 @@
 package org.example.t5s.controller;
 
+import jakarta.validation.Valid;
 import org.example.t5s.dto.Request.UserRequest;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.example.t5s.dto.Response.UserResponse;
-import org.example.t5s.mapper.UserMapper;
 import org.example.t5s.model.User;
-import org.example.t5s.model.ValidationResult;
 import org.example.t5s.service.RoleService;
 import org.example.t5s.service.UserService;
-import org.example.t5s.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 
-import java.io.IOException;
-import java.util.List;
+@Controller
+public class UserEditController {
 
-@WebServlet({"/useradd.jhtml", "/useredit.jhtml"})
-public class UserEditController extends HttpServlet {
     private final UserService userService;
     private final RoleService roleService;
-    private final UserMapper userMapper;
-    private final UserValidator userValidator;
-
-    private static final String USER_ADD_PATH = "/WEB-INF/jsp/useradd.jsp";
-    private static final String USER_EDIT_PATH = "/WEB-INF/jsp/useredit.jsp";
-    private static final String USER_LIST = "/userlist.jhtml";
-    private static final String USER_ADD = "/useradd.jhtml";
-    private static final String USER_EDIT = "/useredit.jhtml";
 
     @Autowired
-    public UserEditController(@Lazy UserService userService,@Lazy RoleService roleService,@Lazy UserMapper userMapper,@Lazy UserValidator userValidator){
+    public UserEditController(@Lazy UserService userService, @Lazy RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.userMapper = userMapper;
-        this.userValidator = userValidator;
     }
 
-    @Override
-    public void init() throws ServletException {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    @GetMapping("/useradd.jhtml")
+    public String showAddForm(Model model) {
+        model.addAttribute("user", new UserRequest());
+        model.addAttribute("allRoles", roleService.getAllRoleNames());
+        return "useradd";
     }
 
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getServletPath();
-        String contextPath = req.getContextPath();
+    @PostMapping("/useradd.jhtml")
+    public String processAdd(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, Model model) {
 
-        if (USER_ADD.equals(path)) {
-            handleUserAdd(req, resp, contextPath);
-        } else if (USER_EDIT.equals(path)) {
-            handleUserEdit(req, resp, contextPath);
-        }
-    }
-
-    private void handleUserEdit(HttpServletRequest req, HttpServletResponse resp, String contextPath)
-            throws ServletException, IOException {
-
-        List<String> allRoleNames = roleService.getAllRoleNames();
-        req.setAttribute("allRoles", allRoleNames);
-        String method = req.getMethod();
-
-        if ("GET".equalsIgnoreCase(req.getMethod())) {
-            String login = req.getParameter("id");
-            UserResponse user = userService.findUserByLogin(login);
-            req.setAttribute("user", user);
-
-            req.getRequestDispatcher(USER_EDIT_PATH).forward(req, resp);
-
-        } else if ("POST".equalsIgnoreCase(method)) {
-            try {
-                UserRequest userRequest = userMapper.mapToRequest(req);
-                ValidationResult validationResult = userValidator.validate(userRequest);
-
-                if(validationResult.isValid()) {
-                    User currentUser = (User) req.getSession().getAttribute("user");
-                    String currentUserLogin = (currentUser != null) ? currentUser.getLogin() : null;
-
-                    userService.updateUserData(userRequest, currentUserLogin);
-
-                    resp.sendRedirect(req.getContextPath() + USER_LIST);
-                    return;
-                }
-                else {
-                    validationResult.addError("login", "Данные не валидны");
-                }
-                req.setAttribute("errors", validationResult.getErrors());
-                req.setAttribute("user", userRequest);
-
-                req.getRequestDispatcher(USER_EDIT_PATH).forward(req, resp);
-
-            } catch (Exception e) {
-                req.setAttribute("error", "Ошибка при обновлении данных: " + e.getMessage());
-                req.getRequestDispatcher(USER_EDIT_PATH).forward(req, resp);
-            }
-        }
-    }
-
-    private void handleUserAdd(HttpServletRequest req, HttpServletResponse resp, String contextPath)
-            throws ServletException, IOException {
-
-        List<String> allRoleNames = roleService.getAllRoleNames();
-        req.setAttribute("allRoles", allRoleNames);
-
-        if ("POST".equalsIgnoreCase(req.getMethod())) {
-            UserRequest userRequest = userMapper.mapToRequest(req);
-            ValidationResult validationResult = userValidator.validate(userRequest);
-
-            if (validationResult.isValid()) {
-                boolean isAdded = userService.addUser(userRequest);
-                if (isAdded) {
-                    resp.sendRedirect(contextPath + USER_LIST);
-                    return;
-                } else {
-                    req.setAttribute("errorMessage", "Пользователь с таким логином уже существует!");
-                }
-            } else {
-                req.setAttribute("errorMessage", "Пожалуйста, исправьте ошибки в форме");
-                req.setAttribute("errors", validationResult.getErrors());
-            }
-            req.setAttribute("user", userRequest);
+        if (userRequest.getPassword() == null || userRequest.getPassword().trim().isEmpty()) {
+            bindingResult.rejectValue("password", "error.user", "Пароль обязателен при создании");
         }
 
-        req.getRequestDispatcher(USER_ADD_PATH).forward(req, resp);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allRoles", roleService.getAllRoleNames());
+            return "useradd";
+        }
+
+        if (!userService.addUser(userRequest)) {
+            model.addAttribute("error", "Пользователь с таким логином уже существует!"); // поменял на "error" для JSP
+            model.addAttribute("allRoles", roleService.getAllRoleNames());
+            return "useradd";
+        }
+
+        return "redirect:/userlist.jhtml";
+    }
+
+    @GetMapping("/useredit.jhtml")
+    public String showEditForm(@RequestParam("id") String login, Model model) {
+        UserResponse user = userService.findUserByLogin(login);
+        model.addAttribute("user", user);
+        model.addAttribute("allRoles", roleService.getAllRoleNames());
+        return "useredit";
+    }
+
+    @PostMapping("/useredit.jhtml")
+    public String processEdit(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, @SessionAttribute(value = "user", required = false) User currentUser, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(System.out::println);
+
+            model.addAttribute("allRoles", roleService.getAllRoleNames());
+            return "useredit";
+        }
+
+        try {
+            String currentUserLogin = (currentUser != null) ? currentUser.getLogin() : null;
+            userService.updateUserData(userRequest, currentUserLogin);
+            return "redirect:/userlist.jhtml";
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при обновлении: " + e.getMessage());
+            model.addAttribute("allRoles", roleService.getAllRoleNames());
+            return "useredit";
+        }
     }
 }

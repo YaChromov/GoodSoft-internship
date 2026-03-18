@@ -1,16 +1,32 @@
 package org.example.t5s.dto.Request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.PastOrPresent;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class UserRequest {
+
+    @NotBlank
     private String login;
     private String password;
+    @NotBlank
+    @Email
     private String email;
+    @NotBlank
     private String surname;
+    @NotBlank
     private String name;
+    @NotBlank
     private String patronymic;
+    @PastOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+    @NotEmpty
     private List<String> roles;
 
     public UserRequest() {

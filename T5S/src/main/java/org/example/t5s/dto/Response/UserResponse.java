@@ -1,5 +1,7 @@
 package org.example.t5s.dto.Response;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class UserResponse {
         private String surname;
         private String name;
         private String patronymic;
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthday;
         private List<String> roles;
 

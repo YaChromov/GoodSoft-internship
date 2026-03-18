@@ -1,6 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -62,8 +65,8 @@
             justify-content: center;
             align-items: center;
             background-image:
-                linear-gradient(to top right, transparent 49.7%, #f5f5f5 49.7%, #f5f5f5 50.3%, transparent 50.3%),
-                linear-gradient(to top left, transparent 49.7%, #f5f5f5 49.7%, #f5f5f5 50.3%, transparent 50.3%);
+                    linear-gradient(to top right, transparent 49.7%, #f5f5f5 49.7%, #f5f5f5 50.3%, transparent 50.3%),
+                    linear-gradient(to top left, transparent 49.7%, #f5f5f5 49.7%, #f5f5f5 50.3%, transparent 50.3%);
         }
 
         .edit-card {
@@ -114,6 +117,7 @@
             box-sizing: border-box;
             border: 1px solid #bbb;
             background: #fafafa;
+            outline: none;
         }
 
         .btn-group {
@@ -140,11 +144,6 @@
             color: #888;
             text-decoration: none;
             margin-top: 10px;
-        }
-
-        .back-link:hover {
-            color: #333;
-            text-decoration: underline;
         }
 
         footer {
@@ -179,23 +178,23 @@
             <div class="error-message">${errorMessage}</div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/loginedit.jhtml" method="post">
 
+        <form:form action="${pageContext.request.contextPath}/loginedit.jhtml" method="post" modelAttribute="passwordForm">
             <div class="form-group">
                 <label>СТАРЫЙ ПАРОЛЬ</label>
-                <input type="password" name="oldPassword" required>
+                <form:password path="oldPassword" required="required" />
             </div>
 
             <div class="form-group">
                 <label>НОВЫЙ ПАРОЛЬ</label>
-                <input type="password" name="newPassword" required>
+                <form:password path="newPassword" required="required" />
             </div>
 
             <div class="btn-group">
                 <button type="submit" class="submit-btn">Изменить</button>
                 <a href="${pageContext.request.contextPath}/welcome.jhtml" class="back-link">Отмена / На главную</a>
             </div>
-        </form>
+        </form:form>
     </div>
 </main>
 

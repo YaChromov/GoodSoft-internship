@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -70,9 +72,6 @@
             background: #fff;
             border: 1px solid #ccc;
             padding: 30px;
-            background-image:
-                linear-gradient(to top right, transparent 49.9%, #f9f9f9 49.9%, #f9f9f9 50.1%, transparent 50.1%),
-                linear-gradient(to top left, transparent 49.9%, #f9f9f9 49.9%, #f9f9f9 50.1%, transparent 50.1%);
         }
 
         .error-banner {
@@ -84,7 +83,6 @@
             text-align: center;
             background-color: #fee;
             border: 1px solid #f88;
-            border-radius: 4px;
         }
 
         table {
@@ -92,8 +90,6 @@
             border-collapse: collapse;
             background: white;
             box-shadow: 5px 5px 15px #eee;
-            position: relative;
-            z-index: 1;
         }
 
         th {
@@ -101,7 +97,6 @@
             color: #444;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 1px;
             padding: 12px;
             border: 1px solid #aaa;
             text-align: left;
@@ -114,14 +109,6 @@
         }
 
         tr:nth-child(even) { background-color: #f8f8f8; }
-        tr:hover { background-color: #f0f0f0; }
-
-        /* Стили для ролей */
-        .role-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
 
         .role-badge {
             display: inline-block;
@@ -131,7 +118,6 @@
             border-radius: 3px;
             font-size: 10px;
             font-weight: bold;
-            color: #666;
             text-transform: uppercase;
         }
 
@@ -151,19 +137,7 @@
             background: #fdfdfd;
         }
 
-        .edit-btn:hover { background: #e0e0e0; color: #000; }
-        .del-btn { color: #a00; }
-        .del-btn:hover { background: #fee; }
-
-        footer {
-            margin: 0 60px 20px 60px;
-            padding: 15px;
-            border: 1px solid #bbb;
-            background: linear-gradient(90deg, #ddd, #f5f5f5, #ddd);
-            text-align: center;
-            font-size: 11px;
-            color: #777;
-        }
+        .del-btn { color: #a00; border: 1px solid #bbb; }
     </style>
 </head>
 <body>
@@ -186,57 +160,43 @@
     </h2>
 
     <c:if test="${not empty errorMessage}">
-        <div class="error-banner">
-            ${errorMessage}
-        </div>
+        <div class="error-banner">${errorMessage}</div>
     </c:if>
 
     <table>
         <thead>
-            <tr>
-                <th>Логин</th>
-                <th>ФИО</th>
-                <th>Email</th>
-                <th>Дата рожд.</th>
-                <th>Роли</th>
-                <th style="width: 150px;">Действия</th>
-            </tr>
+        <tr>
+            <th>Логин</th>
+            <th>ФИО</th>
+            <th>Email</th>
+            <th>Дата рожд.</th>
+            <th>Роли</th>
+            <th style="width: 150px;">Действия</th>
+        </tr>
         </thead>
         <tbody>
-            <c:forEach var="u" items="${userList}">
-                <tr>
-                    <td><strong>${u.login}</strong></td>
-                    <td>${u.surname} ${u.name} ${u.patronymic}</td>
-                    <td>${u.email}</td>
-                    <td>${u.birthday}</td>
-                    <td>
-                        <div class="role-container">
-                            <%-- Перебираем список ролей (List<String>) --%>
-                            <c:forEach var="r" items="${u.roles}">
-                                <span class="role-badge ${r eq 'ADMIN' ? 'role-badge-admin' : ''}">
-                                    ${r}
-                                </span>
-                            </c:forEach>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/useredit.jhtml?id=${u.login}" class="action-btn edit-btn">Изменить</a>
+        <c:forEach var="u" items="${userList}">
+            <tr>
+                <td><strong>${u.login}</strong></td>
+                <td>${u.surname} ${u.name} ${u.patronymic}</td>
+                <td>${u.email}</td>
+                <td>${u.birthday}</td>
+                <td>
+                    <c:forEach var="r" items="${u.roles}">
+                        <span class="role-badge ${r eq 'ADMIN' ? 'role-badge-admin' : ''}">${r}</span>
+                    </c:forEach>
+                </td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/useredit.jhtml?id=${u.login}" class="action-btn">Изменить</a>
 
-                        <a href="${pageContext.request.contextPath}/userlist.jhtml?login=${u.login}" class="action-btn del-btn"
-                           onclick="return confirm('Вы уверены, что хотите удалить пользователя ${u.login}?')">
-                           Удалить
-                        </a>
-                    </td>
-                </tr>
-            </c:forEach>
-
-            <c:if test="${empty userList}">
-                <tr>
-                    <td colspan="6" style="text-align: center; color: #999; padding: 40px;">
-                        Список пользователей пуст
-                    </td>
-                </tr>
-            </c:if>
+                    <form:form action="${pageContext.request.contextPath}/userlist.jhtml/delete" method="post" style="display:inline;"
+                               onsubmit="return confirm('Вы уверены?')">
+                        <input type="hidden" name="login" value="${u.login}" />
+                        <button type="submit" class="action-btn del-btn">Удалить</button>
+                    </form:form>
+                </td>
+            </tr>
+        </c:forEach>
         </tbody>
     </table>
 </main>

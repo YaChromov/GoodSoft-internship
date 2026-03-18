@@ -1,12 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Главная</title>
-    <%-- Ваши стили остаются без изменений --%>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -43,7 +44,10 @@
             color: #666;
         }
 
-        .user-info a { color: #000; font-weight: bold; }
+        .user-info a {
+            color: #000;
+            font-weight: bold;
+        }
 
         nav {
             margin: 0 60px;
@@ -88,14 +92,13 @@
         }
 
         .logout-btn {
-            background: none;
+            background: linear-gradient(#eee, #ccc);
             border: 1px solid #aaa;
             padding: 2px 8px;
             border-radius: 3px;
             cursor: pointer;
             margin-left: 10px;
             font-size: 12px;
-            background: linear-gradient(#eee, #ccc);
         }
 
         .logout-btn:hover {
@@ -109,9 +112,9 @@
     <div class="logo">XPOM</div>
     <div class="user-info">
         Привет, <a href="${pageContext.request.contextPath}/loginedit.jhtml"><strong>${sessionScope.user.login}</strong></a>.
-        <form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
+        <form:form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
             <button type="submit" class="logout-btn">Выйти</button>
-        </form>
+        </form:form>
     </div>
 </header>
 
@@ -119,10 +122,9 @@
     <div class="nav-links">
         <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
 
-        <%-- ИСПРАВЛЕННЫЙ БЛОК: Проверяем наличие роли ADMIN в коллекции roles --%>
         <c:set var="isAdmin" value="false" />
         <c:forEach var="role" items="${sessionScope.user.roles}">
-            <c:if test="${role.name eq 'ADMIN'}">
+            <c:if test="${role.name eq 'ADMIN' or role eq 'ADMIN'}">
                 <c:set var="isAdmin" value="true" />
             </c:if>
         </c:forEach>

@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -64,8 +66,8 @@
             padding: 40px 0;
             background-color: #fff;
             background-image:
-                linear-gradient(to top right, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%),
-                linear-gradient(to top left, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%);
+                    linear-gradient(to top right, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%),
+                    linear-gradient(to top left, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%);
             border: 1px solid #ccc;
         }
 
@@ -120,8 +122,7 @@
             text-transform: uppercase;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 10px;
             font-size: 14px;
@@ -129,11 +130,6 @@
             background: #fff;
             border: 1px solid #bbb;
             outline: none;
-        }
-
-        .form-group input:focus {
-            border-color: #555;
-            background: #fdfdfd;
         }
 
         .roles-selection {
@@ -211,74 +207,59 @@
         <h2>Регистрация пользователя</h2>
 
         <c:if test="${not empty errorMessage}">
-            <div class="error-banner">
-                ${errorMessage}
-            </div>
+            <div class="error-banner">${errorMessage}</div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/useradd.jhtml" method="post">
-
+        <form:form action="${pageContext.request.contextPath}/useradd.jhtml" method="post" modelAttribute="user">
             <div class="form-row">
                 <div class="form-group">
                     <label>Логин</label>
-                    <input type="text" name="login" value="${param.login}" required placeholder="user123">
+                    <form:input path="login" required="required" placeholder="user123" />
                 </div>
                 <div class="form-group">
                     <label>Пароль</label>
-                    <input type="password" name="password" required placeholder="••••••••">
+                    <form:password path="password" required="required" placeholder="••••••••" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Права доступа (Роли)</label>
                 <div class="roles-selection">
-                    <c:forEach var="roleName" items="${allRoles}">
-                        <label class="role-checkbox">
-                            <c:set var="checked" value="false" />
-                            <%-- Проверяем массив выбранных ролей в параметрах --%>
-                            <c:forEach var="pRole" items="${paramValues.roles}">
-                                <c:if test="${pRole eq roleName}">
-                                    <c:set var="checked" value="true" />
-                                </c:if>
-                            </c:forEach>
-                            <input type="checkbox" name="roles" value="${roleName}" ${checked ? 'checked' : ''}>
-                            ${roleName}
-                        </label>
-                    </c:forEach>
+                    <form:checkboxes path="roles" items="${allRoles}" element="label class='role-checkbox'" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Фамилия</label>
-                <input type="text" name="surname" value="${param.surname}" placeholder="Иванов">
+                <form:input path="surname" placeholder="Иванов" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Имя</label>
-                    <input type="text" name="name" value="${param.name}" placeholder="Иван">
+                    <form:input path="name" placeholder="Иван" />
                 </div>
                 <div class="form-group">
                     <label>Отчество</label>
-                    <input type="text" name="patronymic" value="${param.patronymic}" placeholder="Иванович">
+                    <form:input path="patronymic" placeholder="Иванович" />
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Электронная почта (Email)</label>
-                <input type="email" name="email" value="${param.email}" placeholder="example@mail.com">
+                <label>Электронная почта</label>
+                <form:input path="email" type="email" placeholder="example@mail.com" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Дата рождения</label>
-                    <input type="date" name="birthday" value="${param.birthday}">
+                    <form:input path="birthday" type="date" />
                 </div>
             </div>
 
             <button type="submit" class="btn-submit">Создать учетную запись</button>
             <a href="userlist.jhtml" class="back-link">Отмена</a>
-        </form>
+        </form:form>
     </div>
 </main>
 

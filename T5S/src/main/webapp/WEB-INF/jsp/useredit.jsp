@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -35,12 +37,26 @@
             box-shadow: 2px 2px 5px #bbb;
         }
 
+
         nav {
             margin: 0 60px;
             padding: 12px 20px;
             border-top: 1px solid #999;
             border-bottom: 1px solid #999;
             background: #e8e8e8;
+        }
+
+
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            margin-right: 40px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #000;
         }
 
         main {
@@ -53,8 +69,8 @@
             align-items: flex-start;
             padding: 40px 0;
             background-image:
-                linear-gradient(to top right, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%),
-                linear-gradient(to top left, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%);
+                    linear-gradient(to top right, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%),
+                    linear-gradient(to top left, transparent 49.8%, #f8f8f8 49.8%, #f8f8f8 50.2%, transparent 50.2%);
         }
 
         .form-card {
@@ -88,6 +104,20 @@
             border-radius: 4px;
         }
 
+        .error-text {
+            color: #d00;
+            font-size: 11px;
+            display: block;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+
+        .error-field {
+            border: 1px solid #f44 !important;
+            background-color: #fff5f5 !important;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -116,7 +146,6 @@
             font-size: 14px;
         }
 
-        /* Стили для блока выбора ролей */
         .roles-container {
             background: #fff;
             border: 1px solid #bbb;
@@ -184,6 +213,7 @@
 </header>
 
 <nav>
+
     <t:nav />
 </nav>
 
@@ -191,20 +221,18 @@
     <div class="form-card">
         <h2>Редактирование данных</h2>
 
-        <c:if test="${not empty errors or not empty error}">
-            <div class="error-banner">
-                <c:choose>
-                    <c:when test="${not empty error}">${error}</c:when>
-                    <c:otherwise>Данные не валидны. Проверьте правильность заполнения.</c:otherwise>
-                </c:choose>
-            </div>
+
+        <c:if test="${not empty error}">
+            <div class="error-banner">${error}</div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/useredit.jhtml" method="post">
+        <form:form action="${pageContext.request.contextPath}/useredit.jhtml" method="post" modelAttribute="user">
+
             <div class="form-row">
                 <div class="form-group">
                     <label>Логин</label>
-                    <input type="text" name="login" value="${user.login}" required readonly>
+                    <form:input path="login" readonly="true" />
+                    <form:errors path="login" cssClass="error-text" />
                 </div>
             </div>
 
@@ -213,62 +241,66 @@
                 <div class="roles-container">
                     <c:forEach var="roleName" items="${allRoles}">
                         <label class="role-option">
-                            <c:set var="checked" value="false" />
-                            <c:forEach var="userRole" items="${user.roles}">
-                                <c:if test="${userRole eq roleName}">
-                                    <c:set var="checked" value="true" />
-                                </c:if>
-                            </c:forEach>
-
-
                             <c:set var="isDisabled" value="${sessionScope.user.login eq user.login and roleName eq 'ADMIN'}" />
 
-                            <input type="checkbox" name="roles" value="${roleName}"
-                                   ${checked ? 'checked' : ''}
-                                   ${isDisabled ? 'disabled' : ''}>
-                            ${roleName}
-
-                            <c:if test="${isDisabled}">
-
-                                <input type="hidden" name="roles" value="${roleName}">
-
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${isDisabled}">
+                                    <input type="checkbox" name="roles" value="${roleName}" checked disabled>
+                                    <input type="hidden" name="roles" value="${roleName}">
+                                </c:when>
+                                <c:otherwise>
+                                    <form:checkbox path="roles" value="${roleName}" />
+                                </c:otherwise>
+                            </c:choose>
+                                ${roleName}
                         </label>
                     </c:forEach>
                 </div>
+                <form:errors path="roles" cssClass="error-text" />
             </div>
 
             <div class="form-group">
                 <label>Фамилия</label>
-                <input type="text" name="surname" value="${user.surname}">
+                <form:input path="surname" cssErrorClass="error-field" />
+                <form:errors path="surname" cssClass="error-text" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Имя</label>
-                    <input type="text" name="name" value="${user.name}">
+                    <form:input path="name" cssErrorClass="error-field" />
+                    <form:errors path="name" cssClass="error-text" />
                 </div>
                 <div class="form-group">
                     <label>Отчество</label>
-                    <input type="text" name="patronymic" value="${user.patronymic}">
+                    <form:input path="patronymic" cssErrorClass="error-field" />
+                    <form:errors path="patronymic" cssClass="error-text" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" name="email" value="${user.email}">
+                <form:input path="email" type="email" cssErrorClass="error-field" />
+                <form:errors path="email" cssClass="error-text" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Дата рождения</label>
-                    <input type="date" name="birthday" value="${user.birthday}">
+                    <spring:bind path="user.birthday">
+                        <input type="date"
+                               name="birthday"
+                               id="birthday"
+                               value="${status.value}"
+                               class="form-control ${status.error ? 'error-field' : ''}" />
+                    </spring:bind>
+                    <form:errors path="birthday" cssClass="error-text" />
                 </div>
             </div>
 
             <button type="submit" class="btn-save">Сохранить изменения</button>
             <a href="${pageContext.request.contextPath}/userlist.jhtml" class="back-link">Отмена</a>
-        </form>
+        </form:form>
     </div>
 </main>
 
