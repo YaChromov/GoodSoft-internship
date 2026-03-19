@@ -1,10 +1,12 @@
 package org.example.t5s.dao.daoMapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.example.t5s.model.User;
 
 import java.util.List;
 
+@Mapper
 public interface UserDao {
     List<User> findAll();
     User findByLogin(@Param("login") String login);

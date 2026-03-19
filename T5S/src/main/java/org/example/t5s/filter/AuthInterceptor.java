@@ -14,6 +14,8 @@ import java.util.Set;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
+    private final String ADMIN_ROLE_NAME = "ADMIN";
+
     private final List<String> userAllowedPaths = List.of(
             "/welcome.jhtml",
             "/loginedit.jhtml",
@@ -39,7 +41,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         Set<Role> roles = user.getRoles();
         boolean isAdmin = roles != null && roles.stream()
-                .anyMatch(role -> "ADMIN".equalsIgnoreCase(role.getName()));
+                .anyMatch(role -> ADMIN_ROLE_NAME.equalsIgnoreCase(role.getName()));
 
         if (!isAdmin && !userAllowedPaths.contains(path)) {
             response.sendRedirect(request.getContextPath() + "/welcome.jhtml");

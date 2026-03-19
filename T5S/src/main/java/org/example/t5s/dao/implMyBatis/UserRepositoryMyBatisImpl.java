@@ -30,14 +30,12 @@ public class UserRepositoryMyBatisImpl implements UserRepository {
     }
 
     @Override
-    @Transactional
     public void addUser(User user) {
         userDao.insert(user);
         saveUserRoles(user);
     }
 
     @Override
-    @Transactional
     public void updateUser(User user) {
         User existing = userDao.findByLogin(user.getLogin());
         if (existing != null) {
@@ -50,14 +48,12 @@ public class UserRepositoryMyBatisImpl implements UserRepository {
     }
 
     @Override
-    @Transactional
     public void updateUserPassword(User user, String newPassword) {
         userDao.updatePassword(user.getLogin(), newPassword);
         user.setPassword(newPassword);
     }
 
     @Override
-    @Transactional
     public void deleteUser(User user) {
         userDao.delete(user.getLogin());
     }

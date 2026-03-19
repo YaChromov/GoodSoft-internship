@@ -8,12 +8,13 @@ import org.example.t5s.model.User;
 import org.example.t5s.service.RoleService;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -23,7 +24,7 @@ public class UserEditController {
     private final RoleService roleService;
 
     @Autowired
-    public UserEditController(@Lazy UserService userService, @Lazy RoleService roleService) {
+    public UserEditController(UserService userService,RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -36,25 +37,20 @@ public class UserEditController {
     }
 
     @PostMapping("/useradd.jhtml")
-    public String processAdd(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, Model model) {
+    public String processAdd(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult) {
 
         if (userRequest.getPassword() == null || userRequest.getPassword().trim().isEmpty()) {
-            bindingResult.rejectValue("password", "error.user", "Пароль обязателен при создании");
+            bindingResult.rejectValue("password", "field.required", "Пароль обязателен при создании");
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("allRoles", roleService.getAllRoleNames());
             return "useradd";
         }
-
-        if (!userService.addUser(userRequest)) {
-            model.addAttribute("error", "Пользователь с таким логином уже существует!"); // поменял на "error" для JSP
-            model.addAttribute("allRoles", roleService.getAllRoleNames());
-            return "useradd";
-        }
+        userService.addUser(userRequest);
 
         return "redirect:/userlist.jhtml";
     }
+
 
     @GetMapping("/useredit.jhtml")
     public String showEditForm(@RequestParam("id") String login, Model model) {
@@ -65,23 +61,18 @@ public class UserEditController {
     }
 
     @PostMapping("/useredit.jhtml")
-    public String processEdit(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, @SessionAttribute(value = "user", required = false) User currentUser, Model model) {
+    public String processEdit(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, @SessionAttribute(value = "user", required = false) User currentUser) {
 
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(System.out::println);
-
-            model.addAttribute("allRoles", roleService.getAllRoleNames());
             return "useredit";
         }
+        String currentUserLogin = (currentUser != null) ? currentUser.getLogin() : null;
+        userService.updateUserData(userRequest, currentUserLogin);
+        return "redirect:/userlist.jhtml";
+    }
 
-        try {
-            String currentUserLogin = (currentUser != null) ? currentUser.getLogin() : null;
-            userService.updateUserData(userRequest, currentUserLogin);
-            return "redirect:/userlist.jhtml";
-        } catch (Exception e) {
-            model.addAttribute("error", "Ошибка при обновлении: " + e.getMessage());
-            model.addAttribute("allRoles", roleService.getAllRoleNames());
-            return "useredit";
-        }
+    @ModelAttribute("allRoles")
+    public List<String> populateRoles() {
+        return roleService.getAllRoleNames();
     }
 }

@@ -7,7 +7,7 @@ import org.example.t5s.model.PasswordChangeForm;
 import org.example.t5s.model.User;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+
 
 
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class AuthController {
     private final UserService userService;
 
     @Autowired
-    public AuthController(@Lazy UserService userService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 
@@ -51,13 +51,12 @@ public class AuthController {
     }
 
     @PostMapping("/loginedit.jhtml")
-    public String handleEditPassword(@ModelAttribute("passwordForm") PasswordChangeForm form, @SessionAttribute(value = "user", required = false) User user, Model model) {
-        if (user != null && userService.changePassword(user.getLogin(), form.getOldPassword(), form.getNewPassword())) {
-            return "redirect:/welcome.jhtml?message=passwordChanged";
-        } else {
-            model.addAttribute("errorMessage", "Ошибка смены пароля");
-            return "loginedit";
+    public String handleEditPassword(@ModelAttribute("passwordForm") PasswordChangeForm form, @SessionAttribute(value = "user", required = false) User user) {
+        if (user == null) {
+            return "redirect:/login.jhtml";
         }
+        userService.changePassword(user.getLogin(), form.getOldPassword(), form.getNewPassword());
+        return "redirect:/welcome.jhtml?message=passwordChanged";
     }
 
     @PostMapping("/logout.jhtml")
