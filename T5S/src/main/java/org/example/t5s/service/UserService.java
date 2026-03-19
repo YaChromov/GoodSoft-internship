@@ -46,11 +46,11 @@ public class UserService {
         User user = userRepository.findUserByLogin(login);
 
         if (user == null) {
-            throw new BusinessException("Пользователь не найден.");
+            throw new BusinessException("error.user.notfound");
         }
 
         if (!Objects.equals(user.getPassword(), oldPassword)) {
-            throw new BusinessException("Старый пароль введен неверно.");
+            throw new BusinessException("error.password.invalid");
         }
 
         userRepository.updateUserPassword(user, newPassword);
@@ -68,7 +68,7 @@ public class UserService {
     @Transactional
     public void updateUserData(UserRequest userRequest, String currentUserLogin) {
         if (userRequest == null || userRequest.getLogin() == null) {
-            throw new BusinessException("Данные пользователя не заполнены.");
+            throw new BusinessException("error.user.data.required");
         }
 
         Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
@@ -78,13 +78,13 @@ public class UserService {
 
 
             if (!hasAdmin) {
-                throw new BusinessException("Вы не можете снять с себя роль администратора!");
+                throw new BusinessException("error.admin.self.demote");
             }
         }
 
         User existingUser = userRepository.findUserByLogin(userRequest.getLogin());
         if (existingUser == null) {
-            throw new BusinessException("Пользователь " + userRequest.getLogin() + " не найден в базе.");
+            throw new BusinessException("error.user.notfound");
         }
 
         userRepository.updateUser(userMapper.toEntity(userRequest, roles));
@@ -93,12 +93,12 @@ public class UserService {
     @Transactional
     public void deleteUser(String deleteUserLogin, String currentUserLogin) {
         if (deleteUserLogin.equals(currentUserLogin)) {
-            throw new BusinessException("Вы не можете удалить свою учетную запись!");
+            throw new BusinessException("error.delete.self");
         }
 
         User user = userRepository.findUserByLogin(deleteUserLogin);
         if (user == null) {
-            throw new BusinessException("Пользователь для удаления не найден.");
+            throw new BusinessException("error.user.notfound");
         }
 
         userRepository.deleteUser(user);
@@ -107,7 +107,7 @@ public class UserService {
     @Transactional
     public void addUser(UserRequest userRequest) {
         if (userRepository.findUserByLogin(userRequest.getLogin()) != null) {
-            throw new BusinessException("ПОльзователь с таким логином уже существует");
+            throw new BusinessException("error.user.duplicate");
         }
         Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
         userRepository.addUser(userMapper.toEntity(userRequest, roles));

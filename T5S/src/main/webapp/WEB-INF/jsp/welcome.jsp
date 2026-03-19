@@ -1,13 +1,14 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="${pageContext.response.locale.language}">
 <head>
     <meta charset="UTF-8">
-    <title>Главная</title>
+    <title><spring:message code="common.home" /></title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -39,14 +40,67 @@
             text-shadow: 1px 1px 0px #fff;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-switcher {
+            display: flex;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .lang-link {
+            padding: 2px 10px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            background: linear-gradient(#eee, #ccc);
+            border-right: 1px solid #aaa;
+        }
+
+        .lang-link:last-child {
+            border-right: none;
+        }
+
+        .lang-link:hover {
+            background: #ddd;
+        }
+
+        .lang-link.active {
+            background: #bbb;
+            color: #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
         .user-info {
             font-size: 14px;
             color: #666;
+            display: flex;
+            align-items: center;
         }
 
         .user-info a {
             color: #000;
             font-weight: bold;
+        }
+
+        .logout-btn {
+            background: linear-gradient(#eee, #ccc);
+            border: 1px solid #aaa;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: #ddd;
         }
 
         nav {
@@ -90,37 +144,34 @@
             font-size: 12px;
             color: #777;
         }
-
-        .logout-btn {
-            background: linear-gradient(#eee, #ccc);
-            border: 1px solid #aaa;
-            padding: 2px 8px;
-            border-radius: 3px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 12px;
-        }
-
-        .logout-btn:hover {
-            background: #ddd;
-        }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">XPOM</div>
-    <div class="user-info">
-        Привет, <a href="${pageContext.request.contextPath}/loginedit.jhtml"><strong>${sessionScope.user.login}</strong></a>.
-        <form:form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
-            <button type="submit" class="logout-btn">Выйти</button>
-        </form:form>
+
+    <div class="header-right">
+        <div class="lang-switcher">
+            <a href="?lang=ru" class="lang-link ${pageContext.response.locale.language == 'ru' ? 'active' : ''}">RU</a>
+            <a href="?lang=en" class="lang-link ${pageContext.response.locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+
+        <div class="user-info">
+            <spring:message code="common.welcome" />,
+            <a href="${pageContext.request.contextPath}/loginedit.jhtml">
+                <strong>${sessionScope.user.login}</strong>
+            </a>.
+            <form:form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
+                <button type="submit" class="logout-btn"><spring:message code="common.logout" /></button>
+            </form:form>
+        </div>
     </div>
 </header>
 
 <nav>
     <div class="nav-links">
-        <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
+        <a href="${pageContext.request.contextPath}/welcome.jhtml"><spring:message code="common.home" /></a>
 
         <c:set var="isAdmin" value="false" />
         <c:forEach var="role" items="${sessionScope.user.roles}">
@@ -130,7 +181,7 @@
         </c:forEach>
 
         <c:if test="${isAdmin}">
-            <a href="${pageContext.request.contextPath}/userlist.jhtml">Пользователи</a>
+            <a href="${pageContext.request.contextPath}/userlist.jhtml"><spring:message code="common.users" /></a>
         </c:if>
     </div>
 </nav>

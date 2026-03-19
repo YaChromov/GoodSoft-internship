@@ -1,24 +1,19 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="${pageContext.response.locale.language}">
 <head>
     <meta charset="UTF-8">
-    <title>Смена пароля</title>
+    <title><spring:message code="password.title" /></title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            margin: 0; padding: 0; background-color: #f0f0f0; color: #333;
+            display: flex; flex-direction: column; min-height: 100vh;
         }
 
         header {
@@ -39,6 +34,37 @@
             color: #444;
             text-shadow: 1px 1px 0px #fff;
             box-shadow: 2px 2px 5px #bebebe;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-switcher {
+            display: flex;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .lang-link {
+            padding: 2px 10px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            background: linear-gradient(#eee, #ccc);
+            border-right: 1px solid #aaa;
+        }
+
+        .lang-link:last-child { border-right: none; }
+        .lang-link:hover { background: #ddd; }
+        .lang-link.active {
+            background: #bbb;
+            color: #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         nav {
@@ -98,10 +124,7 @@
             text-align: center;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        .form-group { margin-bottom: 20px; }
         .form-group label {
             display: block;
             font-size: 11px;
@@ -112,48 +135,28 @@
         }
 
         .form-group input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #bbb;
-            background: #fafafa;
-            outline: none;
+            width: 100%; padding: 10px; box-sizing: border-box;
+            border: 1px solid #bbb; background: #fafafa; outline: none;
         }
 
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
 
         .submit-btn {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #999;
+            width: 100%; padding: 12px; border: 1px solid #999;
             background: linear-gradient(#eee, #ccc);
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
+            cursor: pointer; font-weight: bold; text-transform: uppercase;
             color: #444;
         }
 
         .back-link {
-            text-align: center;
-            display: block;
-            font-size: 12px;
-            color: #888;
-            text-decoration: none;
-            margin-top: 10px;
+            text-align: center; display: block; font-size: 12px;
+            color: #888; text-decoration: none; margin-top: 10px;
         }
 
         footer {
-            margin: 20px 60px;
-            padding: 20px;
-            border: 1px solid #bbb;
+            margin: 20px 60px; padding: 20px; border: 1px solid #bbb;
             background: linear-gradient(90deg, #ddd, #f5f5f5, #ddd);
-            text-align: center;
-            font-size: 12px;
-            color: #777;
+            text-align: center; font-size: 12px; color: #777;
         }
     </style>
 </head>
@@ -161,38 +164,45 @@
 
 <header>
     <div class="logo">XPOM</div>
-    <div style="color: #666; font-size: 14px;">Безопасность профиля</div>
+    <div class="header-right">
+        <div class="lang-switcher">
+            <a href="?lang=ru" class="lang-link ${pageContext.response.locale.language == 'ru' ? 'active' : ''}">RU</a>
+            <a href="?lang=en" class="lang-link ${pageContext.response.locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+        <div style="color: #666; font-size: 14px;"><spring:message code="password.header" /></div>
+    </div>
 </header>
 
 <nav>
     <div class="nav-links">
-        <a href="${pageContext.request.contextPath}/welcome.jhtml">Главная</a>
+        <a href="${pageContext.request.contextPath}/welcome.jhtml"><spring:message code="common.home" /></a>
     </div>
 </nav>
 
 <main>
     <div class="edit-card">
-        <h2>Смена пароля</h2>
+        <h2><spring:message code="password.title" /></h2>
 
         <c:if test="${not empty errorMessage}">
             <div class="error-message">${errorMessage}</div>
         </c:if>
 
-
         <form:form action="${pageContext.request.contextPath}/loginedit.jhtml" method="post" modelAttribute="passwordForm">
             <div class="form-group">
-                <label>СТАРЫЙ ПАРОЛЬ</label>
+                <label><spring:message code="password.label.old" /></label>
                 <form:password path="oldPassword" required="required" />
             </div>
 
             <div class="form-group">
-                <label>НОВЫЙ ПАРОЛЬ</label>
+                <label><spring:message code="password.label.new" /></label>
                 <form:password path="newPassword" required="required" />
             </div>
 
             <div class="btn-group">
-                <button type="submit" class="submit-btn">Изменить</button>
-                <a href="${pageContext.request.contextPath}/welcome.jhtml" class="back-link">Отмена / На главную</a>
+                <button type="submit" class="submit-btn"><spring:message code="password.btn.submit" /></button>
+                <a href="${pageContext.request.contextPath}/welcome.jhtml" class="back-link">
+                    <spring:message code="password.btn.cancel" />
+                </a>
             </div>
         </form:form>
     </div>

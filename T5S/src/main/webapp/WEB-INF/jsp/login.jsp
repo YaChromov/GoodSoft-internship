@@ -1,23 +1,19 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="${pageContext.response.locale.language}">
 <head>
     <meta charset="UTF-8">
-    <title>Вход в систему</title>
+    <title><spring:message code="login.title" /></title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            margin: 0; padding: 0; background-color: #f0f0f0; color: #333;
+            display: flex; flex-direction: column; min-height: 100vh;
         }
 
         header {
@@ -38,6 +34,37 @@
             color: #444;
             text-shadow: 1px 1px 0px #fff;
             box-shadow: 2px 2px 5px #bebebe;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-switcher {
+            display: flex;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .lang-link {
+            padding: 2px 10px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            background: linear-gradient(#eee, #ccc);
+            border-right: 1px solid #aaa;
+        }
+
+        .lang-link:last-child { border-right: none; }
+        .lang-link:hover { background: #ddd; }
+        .lang-link.active {
+            background: #bbb;
+            color: #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         main {
@@ -79,17 +106,14 @@
             text-align: center;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 15px; }
 
         .form-group label {
             display: block;
             font-size: 12px;
             margin-bottom: 5px;
             color: #666;
-            font-weight: bold;
-        }
+            font-weight: bold; }
 
         .form-group input {
             width: 100%;
@@ -97,13 +121,9 @@
             box-sizing: border-box;
             border: 1px solid #bbb;
             background: #fafafa;
-            outline: none;
-        }
+            outline: none; }
 
-        .form-group input:focus {
-            border-color: #888;
-            background: #fff;
-        }
+        .form-group input:focus { border-color: #888; background: #fff; }
 
         .submit-btn {
             width: 100%;
@@ -116,11 +136,7 @@
             color: #444;
             transition: all 0.2s;
         }
-
-        .submit-btn:hover {
-            background: linear-gradient(#ddd, #bbb);
-            color: #000;
-        }
+        .submit-btn:hover { background: linear-gradient(#ddd, #bbb); color: #000; }
 
         footer {
             margin: 20px 60px;
@@ -137,12 +153,18 @@
 
 <header>
     <div class="logo">XPOM</div>
-    <div style="color: #999; font-style: italic;">Авторизация</div>
+    <div class="header-right">
+        <div class="lang-switcher">
+            <a href="?lang=ru" class="lang-link ${pageContext.response.locale.language == 'ru' ? 'active' : ''}">RU</a>
+            <a href="?lang=en" class="lang-link ${pageContext.response.locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+        <div style="color: #999; font-style: italic;"><spring:message code="login.caption" /></div>
+    </div>
 </header>
 
 <main>
     <div class="login-card">
-        <h2>Вход</h2>
+        <h2><spring:message code="login.header" /></h2>
 
         <c:if test="${not empty errorMessage}">
             <div class="error-message">${errorMessage}</div>
@@ -150,16 +172,16 @@
 
         <form:form action="${pageContext.request.contextPath}/login.jhtml" method="post" modelAttribute="loginForm">
             <div class="form-group">
-                <label>ЛОГИН</label>
+                <label><spring:message code="login.label.username" /></label>
                 <form:input path="login" required="required" />
             </div>
 
             <div class="form-group">
-                <label>ПАРОЛЬ</label>
+                <label><spring:message code="login.label.password" /></label>
                 <form:password path="password" required="required" />
             </div>
 
-            <button type="submit" class="submit-btn">Войти</button>
+            <button type="submit" class="submit-btn"><spring:message code="login.btn.submit" /></button>
         </form:form>
     </div>
 </main>

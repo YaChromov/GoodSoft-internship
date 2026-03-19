@@ -1,13 +1,14 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="${pageContext.response.locale.language}">
 <head>
     <meta charset="UTF-8">
-    <title>Регистрация пользователя</title>
+    <title><spring:message code="register.title" /></title>
     <style>
         body {
             display: flex;
@@ -36,6 +37,37 @@
             background: linear-gradient(180deg, #eee 0%, #ccc 50%, #aaa 100%);
             border: 2px solid #888;
             box-shadow: 2px 2px 5px #bbb;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-switcher {
+            display: flex;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .lang-link {
+            padding: 2px 10px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            background: linear-gradient(#eee, #ccc);
+            border-right: 1px solid #aaa;
+        }
+
+        .lang-link:last-child { border-right: none; }
+        .lang-link:hover { background: #ddd; }
+        .lang-link.active {
+            background: #bbb;
+            color: #333;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         nav {
@@ -195,7 +227,13 @@
 
 <header>
     <div class="logo">XPOM</div>
-    <div style="font-size: 13px; color: #888;">Администрирование / Новый профиль</div>
+    <div class="header-right">
+        <div class="lang-switcher">
+            <a href="?lang=ru" class="lang-link ${pageContext.response.locale.language == 'ru' ? 'active' : ''}">RU</a>
+            <a href="?lang=en" class="lang-link ${pageContext.response.locale.language == 'en' ? 'active' : ''}">EN</a>
+        </div>
+        <div style="font-size: 13px; color: #888;"><spring:message code="register.header" /></div>
+    </div>
 </header>
 
 <nav>
@@ -204,7 +242,7 @@
 
 <main>
     <div class="form-card">
-        <h2>Регистрация пользователя</h2>
+        <h2><spring:message code="register.title" /></h2>
 
         <c:if test="${not empty errorMessage}">
             <div class="error-banner">${errorMessage}</div>
@@ -213,52 +251,52 @@
         <form:form action="${pageContext.request.contextPath}/useradd.jhtml" method="post" modelAttribute="user">
             <div class="form-row">
                 <div class="form-group">
-                    <label>Логин</label>
+                    <label><spring:message code="register.label.login" /></label>
                     <form:input path="login" required="required" placeholder="user123" />
                 </div>
                 <div class="form-group">
-                    <label>Пароль</label>
+                    <label><spring:message code="register.label.password" /></label>
                     <form:password path="password" required="required" placeholder="••••••••" />
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Права доступа (Роли)</label>
+                <label><spring:message code="register.label.roles" /></label>
                 <div class="roles-selection">
                     <form:checkboxes path="roles" items="${allRoles}" element="label class='role-checkbox'" />
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Фамилия</label>
-                <form:input path="surname" placeholder="Иванов" />
+                <label><spring:message code="register.label.surname" /></label>
+                <form:input path="surname" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>Имя</label>
-                    <form:input path="name" placeholder="Иван" />
+                    <label><spring:message code="register.label.name" /></label>
+                    <form:input path="name" />
                 </div>
                 <div class="form-group">
-                    <label>Отчество</label>
-                    <form:input path="patronymic" placeholder="Иванович" />
+                    <label><spring:message code="register.label.patronymic" /></label>
+                    <form:input path="patronymic" />
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Электронная почта</label>
+                <label><spring:message code="register.label.email" /></label>
                 <form:input path="email" type="email" placeholder="example@mail.com" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>Дата рождения</label>
+                    <label><spring:message code="register.label.birthday" /></label>
                     <form:input path="birthday" type="date" />
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit">Создать учетную запись</button>
-            <a href="userlist.jhtml" class="back-link">Отмена</a>
+            <button type="submit" class="btn-submit"><spring:message code="register.btn.submit" /></button>
+            <a href="userlist.jhtml" class="back-link"><spring:message code="register.btn.cancel" /></a>
         </form:form>
     </div>
 </main>
