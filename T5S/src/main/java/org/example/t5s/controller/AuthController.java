@@ -1,10 +1,7 @@
 package org.example.t5s.controller;
 
-import jakarta.servlet.http.HttpSession;
-
 import org.example.t5s.model.LoginForm;
 import org.example.t5s.model.PasswordChangeForm;
-import org.example.t5s.model.User;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.security.Principal;
 
 @Controller
 public class AuthController {
@@ -31,39 +34,20 @@ public class AuthController {
         return "login";
     }
 
-    @PostMapping("/login.jhtml")
-    public String handleLogin(@ModelAttribute("loginForm") LoginForm form, HttpSession session, Model model) {
-        User user = userService.authenticate(form.getLogin(), form.getPassword());
-
-        if (user != null) {
-            session.setAttribute("user", user);
-            return "redirect:/welcome.jhtml";
-        } else {
-            model.addAttribute("errorMessage", "Неверный логин или пароль");
-            return "login";
-        }
-    }
-
     @GetMapping("/loginedit.jhtml")
     public String loginEditPage(Model model) {
         model.addAttribute("passwordForm", new PasswordChangeForm());
         return "loginedit";
     }
 
+
     @PostMapping("/loginedit.jhtml")
-    public String handleEditPassword(@ModelAttribute("passwordForm") PasswordChangeForm form, @SessionAttribute(value = "user", required = false) User user) {
-        if (user == null) {
+    public String handleEditPassword(@ModelAttribute("passwordForm") PasswordChangeForm form, Principal principal) {
+        if (principal == null) {
             return "redirect:/login.jhtml";
         }
-        userService.changePassword(user.getLogin(), form.getOldPassword(), form.getNewPassword());
+        userService.changePassword(principal.getName(), form.getOldPassword(), form.getNewPassword());
         return "redirect:/welcome.jhtml?message=passwordChanged";
     }
 
-    @PostMapping("/logout.jhtml")
-    public String handleLogout(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
-        return "redirect:/login.jhtml";
-    }
 }

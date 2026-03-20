@@ -1,11 +1,12 @@
 package org.example.t5s.controller;
 
-import org.example.t5s.model.User;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/userlist.jhtml")
@@ -25,8 +26,10 @@ public class UserListController {
     }
 
     @PostMapping("/delete")
-    public String deleteUser(@RequestParam("login") String loginToDelete, @SessionAttribute(value = "user", required = false) User currentUser, Model model) {
-        userService.deleteUser(loginToDelete, currentUser.getLogin());
+    public String deleteUser(@RequestParam("login") String loginToDelete, Principal principal) {
+        if (principal != null) {
+            userService.deleteUser(loginToDelete, principal.getName());
+        }
         return "redirect:/userlist.jhtml";
     }
 }

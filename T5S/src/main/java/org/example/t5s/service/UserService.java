@@ -11,11 +11,11 @@ import org.example.t5s.mapper.UserMapper;
 import org.example.t5s.model.Role;
 import org.example.t5s.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -25,17 +25,19 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public User authenticate(String login, String password) {
+    public User authenticate(String login, String rawPassword) {
         User user = userRepository.findUserByLogin(login);
-        if (user != null && Objects.equals(user.getPassword(), password)) {
+        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
             return user;
         }
         return null;
@@ -49,11 +51,11 @@ public class UserService {
             throw new BusinessException("error.user.notfound");
         }
 
-        if (!Objects.equals(user.getPassword(), oldPassword)) {
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new BusinessException("error.password.invalid");
         }
 
-        userRepository.updateUserPassword(user, newPassword);
+        userRepository.updateUserPassword(user, passwordEncoder.encode(newPassword));
     }
 
     public UserResponse findUserByLogin(String login) {
@@ -75,8 +77,6 @@ public class UserService {
 
         if (userRequest.getLogin().equals(currentUserLogin)) {
             boolean hasAdmin = roles.stream().anyMatch(r -> r.getName().equals("ADMIN"));
-
-
             if (!hasAdmin) {
                 throw new BusinessException("error.admin.self.demote");
             }
@@ -87,7 +87,8 @@ public class UserService {
             throw new BusinessException("error.user.notfound");
         }
 
-        userRepository.updateUser(userMapper.toEntity(userRequest, roles));
+        User updatedEntity = userMapper.toEntity(userRequest, roles);
+        userRepository.updateUser(updatedEntity);
     }
 
     @Transactional
@@ -109,8 +110,12 @@ public class UserService {
         if (userRepository.findUserByLogin(userRequest.getLogin()) != null) {
             throw new BusinessException("error.user.duplicate");
         }
+
         Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
-        userRepository.addUser(userMapper.toEntity(userRequest, roles));
+        User entity = userMapper.toEntity(userRequest, roles);
+        entity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
+        userRepository.addUser(entity);
     }
 }
 

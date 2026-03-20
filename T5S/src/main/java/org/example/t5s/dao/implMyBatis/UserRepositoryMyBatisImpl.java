@@ -40,8 +40,8 @@ public class UserRepositoryMyBatisImpl implements UserRepository {
         User existing = userDao.findByLogin(user.getLogin());
         if (existing != null) {
             user.setPassword(existing.getPassword());
-            userDao.update(user);
 
+            userDao.update(user);
             userDao.deleteUserRoles(user.getLogin());
             saveUserRoles(user);
         }

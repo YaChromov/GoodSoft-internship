@@ -2,6 +2,7 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
@@ -160,11 +161,12 @@
         <div class="user-info">
             <spring:message code="common.welcome" />,
             <a href="${pageContext.request.contextPath}/loginedit.jhtml">
-                <strong>${sessionScope.user.login}</strong>
+                <strong><sec:authentication property="principal.username" /></strong>
             </a>.
-            <form:form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
+            <form action="${pageContext.request.contextPath}/logout.jhtml" method="post" style="display:inline;">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="logout-btn"><spring:message code="common.logout" /></button>
-            </form:form>
+            </form>
         </div>
     </div>
 </header>
@@ -173,16 +175,9 @@
     <div class="nav-links">
         <a href="${pageContext.request.contextPath}/welcome.jhtml"><spring:message code="common.home" /></a>
 
-        <c:set var="isAdmin" value="false" />
-        <c:forEach var="role" items="${sessionScope.user.roles}">
-            <c:if test="${role.name eq 'ADMIN' or role eq 'ADMIN'}">
-                <c:set var="isAdmin" value="true" />
-            </c:if>
-        </c:forEach>
-
-        <c:if test="${isAdmin}">
+        <sec:authorize access="hasRole('ADMIN')">
             <a href="${pageContext.request.contextPath}/userlist.jhtml"><spring:message code="common.users" /></a>
-        </c:if>
+        </sec:authorize>
     </div>
 </nav>
 
