@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.example.t5s.dto.Request.UserRequest;
 
 import org.example.t5s.dto.Response.UserResponse;
-import org.example.t5s.model.User;
 import org.example.t5s.service.RoleService;
 import org.example.t5s.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -40,7 +40,7 @@ public class UserEditController {
     public String processAdd(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult) {
 
         if (userRequest.getPassword() == null || userRequest.getPassword().trim().isEmpty()) {
-            bindingResult.rejectValue("password", "field.required", "Пароль обязателен при создании");
+            bindingResult.rejectValue   ("password", "field.required", "Пароль обязателен при создании");
         }
 
         if (bindingResult.hasErrors()) {
@@ -61,13 +61,14 @@ public class UserEditController {
     }
 
     @PostMapping("/useredit.jhtml")
-    public String processEdit(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, @SessionAttribute(value = "user", required = false) User currentUser) {
-
+    public String processEdit(@Valid @ModelAttribute("user") UserRequest userRequest, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "useredit";
         }
-        String currentUserLogin = (currentUser != null) ? currentUser.getLogin() : null;
+        String currentUserLogin = (principal != null) ? principal.getName() : null;
+
         userService.updateUserData(userRequest, currentUserLogin);
+
         return "redirect:/userlist.jhtml";
     }
 

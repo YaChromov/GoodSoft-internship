@@ -35,13 +35,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User authenticate(String login, String rawPassword) {
-        User user = userRepository.findUserByLogin(login);
-        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
-            return user;
-        }
-        return null;
-    }
 
     @Transactional
     public void changePassword(String login, String oldPassword, String newPassword) {

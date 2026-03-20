@@ -2,7 +2,9 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+
 <!DOCTYPE html>
 <html lang="${pageContext.response.locale.language}">
 <head>
@@ -61,8 +63,14 @@
             border-right: 1px solid #aaa;
         }
 
-        .lang-link:last-child { border-right: none; }
-        .lang-link:hover { background: #ddd; }
+        .lang-link:last-child {
+            border-right: none;
+        }
+
+        .lang-link:hover {
+            background: #ddd;
+        }
+
         .lang-link.active {
             background: #bbb;
             color: #333;
@@ -145,7 +153,9 @@
             font-size: 13px;
         }
 
-        tr:nth-child(even) { background-color: #f8f8f8; }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
 
         .role-badge {
             display: inline-block;
@@ -175,7 +185,9 @@
             cursor: pointer;
         }
 
-        .del-btn { color: #a00; }
+        .del-btn {
+            color: #a00;
+        }
 
         footer {
             margin: 0 60px 20px 60px;
@@ -198,16 +210,19 @@
             <a href="?lang=en" class="lang-link ${pageContext.response.locale.language == 'en' ? 'active' : ''}">EN</a>
         </div>
         <div style="font-size: 13px; color: #888;">
-            <spring:message code="list.auth.as" />: <strong>${sessionScope.user.login}</strong>
+            <spring:message code="list.auth.as" />:
+            <strong><sec:authentication property="principal.username" /></strong>
         </div>
     </div>
 </header>
 
 <nav>
     <t:nav />
-    <a href="${pageContext.request.contextPath}/useradd.jhtml" class="btn-add">
-        <spring:message code="list.btn.add" />
-    </a>
+    <sec:authorize access="hasRole('ADMIN')">
+        <a href="${pageContext.request.contextPath}/useradd.jhtml" class="btn-add">
+            <spring:message code="list.btn.add" />
+        </a>
+    </sec:authorize>
 </nav>
 
 <main>
@@ -233,6 +248,8 @@
         <tbody>
         <spring:message code="list.confirm.delete" var="confirmMsg" />
 
+        <sec:authentication property="principal.username" var="currentUserLogin" />
+
         <c:forEach var="u" items="${userList}">
             <tr>
                 <td><strong>${u.login}</strong></td>
@@ -245,17 +262,20 @@
                     </c:forEach>
                 </td>
                 <td>
+
                     <a href="${pageContext.request.contextPath}/useredit.jhtml?id=${u.login}" class="action-btn">
                         <spring:message code="list.action.edit" />
                     </a>
 
-                    <form:form action="${pageContext.request.contextPath}/userlist.jhtml/delete" method="post" style="display:inline;"
-                               onsubmit="return confirm('${confirmMsg}')">
-                        <input type="hidden" name="login" value="${u.login}" />
-                        <button type="submit" class="action-btn del-btn">
-                            <spring:message code="list.action.delete" />
-                        </button>
-                    </form:form>
+                    <c:if test="${currentUserLogin ne u.login}">
+                        <form:form action="${pageContext.request.contextPath}/delete" method="post" style="display:inline;"
+                                   onsubmit="return confirm('${confirmMsg}')">
+                            <input type="hidden" name="login" value="${u.login}" />
+                            <button type="submit" class="action-btn del-btn">
+                                <spring:message code="list.action.delete" />
+                            </button>
+                        </form:form>
+                    </c:if>
                 </td>
             </tr>
         </c:forEach>

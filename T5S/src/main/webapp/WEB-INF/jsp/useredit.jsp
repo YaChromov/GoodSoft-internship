@@ -2,6 +2,7 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
@@ -10,7 +11,6 @@
     <meta charset="UTF-8">
     <title><spring:message code="edit.title" /></title>
     <style>
-
         body {
             display: flex;
             flex-direction: column;
@@ -34,7 +34,7 @@
             font-size: 26px;
             font-weight: 900;
             letter-spacing: 2px;
-            text-shadow: 1px 1px 0 #fff; /* Белая окантовка букв */
+            text-shadow: 1px 1px 0 #fff;
             background: linear-gradient(180deg, #eee 0%, #ccc 50%, #aaa 100%);
             border: 2px solid #888;
             box-shadow: 2px 2px 5px #bbb;
@@ -63,8 +63,14 @@
             border-right: 1px solid #aaa;
         }
 
-        .lang-link:last-child { border-right: none; }
-        .lang-link:hover { background: #ddd; }
+        .lang-link:last-child {
+            border-right: none;
+        }
+
+        .lang-link:hover {
+            background: #ddd;
+        }
+
         .lang-link.active {
             background: #bbb;
             color: #333;
@@ -155,7 +161,9 @@
             gap: 20px;
         }
 
-        .form-group { margin-bottom: 18px; }
+        .form-group {
+            margin-bottom: 18px;
+        }
 
         .form-group label {
             display: block;
@@ -210,7 +218,9 @@
             transition: 0.2s ease;
         }
 
-        .btn-save:hover { background: linear-gradient(#ddd, #bbb); }
+        .btn-save:hover {
+            background: linear-gradient(#ddd, #bbb);
+        }
 
         .back-link {
             display: block;
@@ -242,7 +252,8 @@
             <a href="?lang=en" class="lang-link ${pageContext.response.locale.language == 'en' ? 'active' : ''}">EN</a>
         </div>
         <div style="font-size: 13px; color: #888;">
-            <spring:message code="edit.card.header" />: <strong>${user.login}</strong>
+            <spring:message code="edit.card.header" />:
+            <strong><sec:authentication property="principal.username" /></strong>
         </div>
     </div>
 </header>
@@ -271,11 +282,13 @@
             <div class="form-group">
                 <label><spring:message code="edit.label.roles" /></label>
                 <div class="roles-container">
+                    <sec:authentication property="principal.username" var="loggedUserLogin" />
+
                     <c:forEach var="roleName" items="${allRoles}">
                         <label class="role-option">
-                            <c:set var="isDisabled" value="${sessionScope.user.login eq user.login and roleName eq 'ADMIN'}" />
+                            <c:set var="isSelfAdminLock" value="${loggedUserLogin eq user.login and roleName eq 'ADMIN'}" />
                             <c:choose>
-                                <c:when test="${isDisabled}">
+                                <c:when test="${isSelfAdminLock}">
                                     <input type="checkbox" name="roles" value="${roleName}" checked disabled>
                                     <input type="hidden" name="roles" value="${roleName}">
                                 </c:when>
