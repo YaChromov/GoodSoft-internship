@@ -1,4 +1,4 @@
-:host {
+.form-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,6 +45,7 @@
 
 .form-group {
   margin-bottom: 18px;
+  position: relative;
 }
 
 .form-group label {
@@ -56,9 +57,9 @@
   text-transform: uppercase;
 }
 
-:host ::ng-deep .p-inputtext,
-:host ::ng-deep .p-password input,
-:host ::ng-deep .p-datepicker input {
+::ng-deep .p-inputtext,
+::ng-deep .p-password input,
+::ng-deep .p-datepicker input {
   width: 100% !important;
   padding: 10px !important;
   font-size: 14px !important;
@@ -75,60 +76,7 @@
   color: #888 !important;
 }
 
-:host ::ng-deep p-password,
-:host ::ng-deep .p-password,
-:host ::ng-deep p-datepicker,
-:host ::ng-deep .p-datepicker {
-  display: flex !important;
-  width: 100% !important;
-}
-
-:host ::ng-deep .p-password > i,
-:host ::ng-deep .p-password > svg {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #666;
-}
-
-:host ::ng-deep .p-datepicker-trigger {
-  background: #eee !important;
-  border: 1px solid #bbb !important;
-  border-left: none !important;
-  border-radius: 0 !important;
-  color: #555 !important;
-  width: 40px !important;
-}
-
-
-.roles-container,
-.roles-selection {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  padding: 10px;
-  background: #fff;
-  border: 1px solid #bbb;
-}
-
-.role-option,
-.role-checkbox {
-  display: flex;
-  align-items: center;
-}
-
-.role-label {
-  margin-left: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  color: #333;
-}
-
-/* ИСПРАВЛЕНИЕ: Кнопка на всю ширину */
-.btn-save,
-.btn-submit {
+.btn-submit, .btn-save {
   width: 100%;
   margin-top: 10px;
   padding: 14px;
@@ -141,9 +89,29 @@
   transition: 0.2s ease;
 }
 
-.btn-save:hover,
-.btn-submit:hover {
+.btn-submit:hover, .btn-save:hover {
   background: linear-gradient(#ddd, #bbb);
+}
+
+.roles-container, .roles-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #bbb;
+}
+
+.role-option, .role-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.role-label {
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
 }
 
 .back-link {

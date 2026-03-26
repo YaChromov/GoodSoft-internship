@@ -1,15 +1,20 @@
 package org.example.t5sr.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.example.t5sr.dto.Response.ErrorResponse;
 import java.util.Locale;
 
-@ControllerAdvice
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.RestController;
+
+
+@ControllerAdvice(annotations = RestController.class)
 public class GlobalExceptionHandler {
 
     private final MessageSource messageSource;
@@ -20,7 +25,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public String handleBusinessException(BusinessException ex, HttpServletRequest request, RedirectAttributes redirectAttributes, Locale locale) {
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex, Locale locale) {
         String translatedMessage = messageSource.getMessage(
                 ex.getMessage(),
                 null,
@@ -28,21 +33,25 @@ public class GlobalExceptionHandler {
                 locale
         );
 
-        redirectAttributes.addFlashAttribute("errorMessage", translatedMessage);
+        ErrorResponse error = new ErrorResponse(
+                translatedMessage,
+                System.currentTimeMillis(),
+                HttpStatus.BAD_REQUEST.value()
+        );
 
-        String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null && !referer.isEmpty() ? referer : "/userlist.jhtml");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public String handleAllExceptions(Exception ex,
-                                      HttpServletRequest request,
-                                      RedirectAttributes redirectAttributes) {
+    public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex) {
         ex.printStackTrace();
 
-        redirectAttributes.addFlashAttribute("errorMessage", "System error: " + ex.getMessage());
+        ErrorResponse error = new ErrorResponse(
+                "Internal Server Error: " + ex.getMessage(),
+                System.currentTimeMillis(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
 
-        String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/userlist.jhtml");
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

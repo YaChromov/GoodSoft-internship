@@ -1,24 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DatePickerModule } from 'primeng/datepicker';
-import { ButtonModule } from 'primeng/button';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UserFormComponent } from '../user-form/user-form.component';
 
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    InputTextModule,
-    CheckboxModule,
-    DatePickerModule,
-    ButtonModule
-  ],
+
+  imports: [UserFormComponent],
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css']
 })
@@ -61,16 +49,13 @@ export class UserEditComponent implements OnInit {
     };
   }
 
-  isSelfAdminLock(role: string): boolean {
-    return this.user.login === this.currentUserLogin && role === 'ADMIN';
-  }
-
-  onSave() {
-    if (!this.user.roles?.length) {
+  onSave(updatedUser: any) {
+    if (!updatedUser.roles?.length) {
       this.errorMessage = 'Выберите роль';
       return;
     }
-    console.log('Сохранение:', this.user);
+
+    console.log('Сохранение отредактированного пользователя:', updatedUser);
     this.router.navigate(['/userlist']);
   }
 }

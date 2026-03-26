@@ -1,6 +1,6 @@
 package org.example.t5sr.mapper;
 
-import jakarta.servlet.http.HttpServletRequest;
+
 
 import org.example.t5sr.dto.Request.UserRequest;
 import org.example.t5sr.dto.Response.UserResponse;
@@ -8,9 +8,6 @@ import org.example.t5sr.model.Role;
 import org.example.t5sr.model.User;
 import org.springframework.stereotype.Component;
 
-
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,33 +32,6 @@ public class UserMapper {
 
         return user;
     }
-
-    public UserRequest mapToRequest(HttpServletRequest req) {
-        UserRequest userRequest = new UserRequest();
-        userRequest.setLogin(req.getParameter("login"));
-        userRequest.setPassword(req.getParameter("password"));
-        userRequest.setSurname(req.getParameter("surname"));
-        userRequest.setName(req.getParameter("name"));
-        userRequest.setPatronymic(req.getParameter("patronymic"));
-        userRequest.setEmail(req.getParameter("email"));
-
-        String birthdayStr = req.getParameter("birthday");
-        if (birthdayStr != null && !birthdayStr.isBlank()) {
-            try {
-                userRequest.setBirthday(LocalDate.parse(birthdayStr));
-            } catch (DateTimeParseException e) {
-                System.out.println(e);
-            }
-        }
-        
-        String[] roleNames = req.getParameterValues("roles");
-        if (roleNames != null) {
-            userRequest.setRoles(Arrays.asList(roleNames));
-        }
-
-        return userRequest;
-    }
-
 
     public UserResponse toResponse(User user) {
         if (user == null) {

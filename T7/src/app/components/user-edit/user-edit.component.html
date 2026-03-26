@@ -1,68 +1,8 @@
-<div class="form-card">
-  <h2>РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ</h2>
-
-  <div *ngIf="errorMessage" class="error-banner">
-    {{ errorMessage }}
-  </div>
-
-  <form (ngSubmit)="onSave()">
-    <div class="form-row">
-      <div class="form-group">
-        <label>ЛОГИН</label>
-        <input pInputText name="login" [(ngModel)]="user.login" readonly class="readonly-input" />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>РОЛИ</label>
-      <div class="roles-container">
-        <div *ngFor="let role of allRoles" class="role-option">
-          <p-checkbox
-            name="roles"
-            [value]="role"
-            [(ngModel)]="user.roles"
-            [inputId]="role"
-            [disabled]="isSelfAdminLock(role)">
-          </p-checkbox>
-          <label [for]="role" class="role-label">{{ role }}</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>ФАМИЛИЯ</label>
-      <input pInputText name="surname" [(ngModel)]="user.surname" />
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>ИМЯ</label>
-        <input pInputText name="name" [(ngModel)]="user.name" />
-      </div>
-      <div class="form-group">
-        <label>ОТЧЕСТВО</label>
-        <input pInputText name="patronymic" [(ngModel)]="user.patronymic" />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>EMAIL</label>
-      <input pInputText name="email" type="email" [(ngModel)]="user.email" />
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label>ДАТА РОЖДЕНИЯ</label>
-        <p-datepicker
-          name="birthday"
-          [(ngModel)]="user.birthday"
-          dateFormat="yy-mm-dd"
-          [showIcon]="true">
-        </p-datepicker>
-      </div>
-    </div>
-
-    <button type="submit" class="btn-save">СОХРАНИТЬ</button>
-    <a routerLink="/userlist" class="back-link">ОТМЕНА</a>
-  </form>
-</div>
+<app-user-form
+  title="РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ"
+  [user]="user"
+  [allRoles]="allRoles"
+  [isEditMode]="true"
+  [errorMessage]="errorMessage"
+  (formSubmit)="onSave($event)">
+</app-user-form>
