@@ -1,0 +1,118 @@
+
+:host ::ng-deep .p-datatable-wrapper {
+  background: white;
+  box-shadow: 5px 5px 15px #eee;
+  border: 1px solid #ccc;
+}
+
+:host ::ng-deep .p-datatable table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+
+:host ::ng-deep .p-datatable thead th {
+  background: linear-gradient(180deg, #eee 0%, #ccc 100%) !important;
+  color: #444 !important;
+  text-transform: uppercase !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  padding: 6px 12px !important;
+  border: 1px solid #aaa !important;
+  text-align: left !important;
+}
+
+
+:host ::ng-deep .p-datatable tbody td {
+  padding: 4px 12px !important;
+  border: 1px solid #ddd !important;
+  font-size: 13px !important;
+  color: #333 !important;
+  vertical-align: middle !important;
+}
+
+
+:host ::ng-deep .p-datatable tbody tr:nth-child(even) td {
+  background-color: #f8f8f8 !important;
+}
+
+:host ::ng-deep .p-datatable tbody tr:nth-child(odd) td {
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .p-datatable tbody tr:hover td {
+  background-color: #f0f0f0 !important;
+}
+
+
+:host ::ng-deep .p-datatable tbody td:last-child {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+  border-left: 1px solid #ddd !important;
+}
+
+
+:host ::ng-deep .p-button.action-btn {
+  height: 24px !important;
+  padding: 0 10px !important;
+  background: linear-gradient(#fff, #f2f2f2) !important;
+  border: 1px solid #bbb !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+
+
+  color: #555 !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  font-family: inherit !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+
+:host ::ng-deep .p-button.action-btn .p-button-label {
+  flex: none !important;
+  padding: 0 !important;
+  font-weight: bold !important;
+}
+
+
+:host ::ng-deep .p-button.action-btn:hover {
+  background: linear-gradient(#f2f2f2, #e6e6e6) !important;
+  border-color: #999 !important;
+  color: #333 !important;
+}
+
+
+:host ::ng-deep .p-button.action-btn.del-btn {
+  color: #a00 !important;
+}
+:host ::ng-deep .p-button.action-btn.del-btn .p-button-label {
+  color: #a00 !important;
+}
+
+.role-badge {
+  display: inline-block;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.role-badge-admin {
+  border-color: #d9534f;
+  color: #d9534f;
+  background: #fff1f0;
+}

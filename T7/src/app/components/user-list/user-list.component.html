@@ -1,0 +1,38 @@
+<p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>ЛОГИН</th>
+      <th>ФИО</th>
+      <th>EMAIL</th>
+      <th>ДАТА РОЖД.</th>
+      <th>РОЛИ</th>
+      <th style="width: 160px;">ДЕЙСТВИЯ</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-u>
+    <tr>
+      <td><strong>{{ u.login }}</strong></td>
+      <td>{{ u.surname }} {{ u.name }} {{ u.patronymic }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.birthday }}</td>
+      <td>
+        <span *ngFor="let r of u.roles"
+              class="role-badge"
+              [class.role-badge-admin]="r === 'ADMIN'">
+            {{ r }}
+        </span>
+      </td>
+      <td>
+        <button pButton
+                type="button"
+                label="ИЗМЕНИТЬ"
+                class="action-btn"
+                [routerLink]="['/useredit', u.login]">
+        </button>
+        <button *ngIf="currentUserLogin !== u.login"
+                pButton type="button" label="УДАЛИТЬ"
+                class="action-btn del-btn"></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

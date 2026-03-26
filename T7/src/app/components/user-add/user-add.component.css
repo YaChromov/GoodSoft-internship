@@ -1,0 +1,161 @@
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 40px 0;
+}
+
+.form-card {
+  z-index: 1;
+  width: 550px;
+  padding: 35px;
+  background: linear-gradient(145deg, #ffffff, #ececec);
+  border: 1px solid #a1a1a1;
+  box-shadow: 10px 10px 20px #d1d1d1, -5px -5px 15px #ffffff;
+}
+
+.form-card h2 {
+  margin: 0 0 25px 0;
+  padding-bottom: 10px;
+  font-size: 1.1rem;
+  color: #444;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #bbb;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+}
+
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-password input,
+:host ::ng-deep .p-datepicker input {
+  width: 100% !important;
+  padding: 10px !important;
+  font-size: 14px !important;
+  background: #fff !important;
+  border: 1px solid #bbb !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+
+:host ::ng-deep p-datepicker,
+:host ::ng-deep .p-datepicker {
+  display: flex !important;
+  width: 100% !important;
+}
+
+:host ::ng-deep p-password,
+:host ::ng-deep .p-password {
+  display: block !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+:host ::ng-deep .p-password > i,
+:host ::ng-deep .p-password > svg {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+}
+
+:host ::ng-deep .p-datepicker-trigger {
+  background: #eee !important;
+  border: 1px solid #bbb !important;
+  border-left: none !important;
+  border-radius: 0 !important;
+  color: #555 !important;
+  width: 40px !important;
+}
+
+
+:host ::ng-deep .p-datepicker-panel {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1px solid #aaa !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .p-datepicker-header {
+  background: #f8f8f8 !important;
+  border-bottom: 1px solid #ddd !important;
+  padding: 8px !important;
+}
+
+:host ::ng-deep .p-datepicker table {
+  background: #ffffff !important;
+}
+
+
+.roles-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #bbb;
+}
+
+.role-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.role-label {
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+}
+
+
+.btn-submit {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: linear-gradient(#eee, #ccc);
+  border: 1px solid #888;
+  transition: 0.2s ease;
+}
+
+.btn-submit:hover {
+  background: linear-gradient(#ddd, #bbb);
+}
+
+.back-link {
+  display: block;
+  margin-top: 15px;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  text-decoration: none;
+}

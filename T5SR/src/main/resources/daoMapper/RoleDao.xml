@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.t5sr.dao.daoMapper.RoleDao">
+
+    <select id="findByName" resultType="org.example.t5sr.model.Role">
+        SELECT id, name FROM roles WHERE UPPER(name) = UPPER(#{name})
+    </select>
+
+    <select id="findAll" resultType="org.example.t5sr.model.Role">
+        SELECT id, name FROM roles
+    </select>
+
+    <select id="findRolesByNames" resultType="org.example.t5sr.model.Role">
+        SELECT id, name FROM roles
+        WHERE UPPER(name) IN
+        <foreach item="name" collection="names" open="(" separator="," close=")">
+            UPPER(#{name})
+        </foreach>
+    </select>
+
+    <select id="findRolesByUserLogin" resultType="org.example.t5sr.model.Role">
+        SELECT r.id, r.name
+        FROM roles r
+        JOIN users_roles ur ON r.id = ur.role_id
+        WHERE ur.user_login = #{login}
+    </select>
+</mapper>

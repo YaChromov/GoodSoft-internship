@@ -1,0 +1,42 @@
+<header>
+  <div class="logo">XPOM</div>
+
+  <div class="header-right">
+    <div class="lang-switcher">
+      <a href="javascript:void(0)"
+         (click)="setLanguage('ru')"
+         class="lang-link"
+         [class.active]="currentLang === 'ru'">RU</a>
+      <a href="javascript:void(0)"
+         (click)="setLanguage('en')"
+         class="lang-link"
+         [class.active]="currentLang === 'en'">EN</a>
+    </div>
+
+    <div class="auth-info" style="font-size: 13px; color: #888;">
+      <ng-container *ngIf="currentLang === 'ru'; else enAuth">Вы вошли как:</ng-container>
+      <ng-template #enAuth>Authenticated as:</ng-template>
+
+      <a routerLink="/loginedit" class="user-link">
+        <strong>{{ authService.username }}</strong>
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-links">
+    <a routerLink="/welcome">
+      {{ currentLang === 'ru' ? 'Главная' : 'Home' }}
+    </a>
+    <a routerLink="/userlist">
+      {{ currentLang === 'ru' ? 'Пользователи' : 'Users' }}
+    </a>
+  </div>
+
+  <a *ngIf="authService.isAdmin"
+     routerLink="/useradd"
+     class="btn-add">
+    {{ currentLang === 'ru' ? '+ Добавить пользователя' : '+ Add user' }}
+  </a>
+</nav>
