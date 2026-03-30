@@ -21,7 +21,7 @@ export class UserEditComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   user: User | null = null;
-  allRoles: string[] = ['ADMIN', 'USER', 'MANAGER'];
+  allRoles: string[] = ['ADMIN', 'USER', 'MODERATOR'];
   errorMessage: string = '';
   isLoading: boolean = false;
 
