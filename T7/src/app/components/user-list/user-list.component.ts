@@ -1,11 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { LanguageService } from '../../services/language.service'; // Добавили
+import { LanguageService } from '../../services/language.service';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-list',
@@ -19,14 +20,17 @@ export class UserListComponent implements OnInit {
 
   authService = inject(AuthService);
   private userService = inject(UserService);
-  private langService = inject(LanguageService); // Добавили
+  private langService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   t = this.langService.t;
 
   ngOnInit() {
-    this.langService.currentLang$.subscribe(() => {
-      this.t = this.langService.t;
-    });
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.t = this.langService.t;
+      });
     this.loadUsers();
   }
 

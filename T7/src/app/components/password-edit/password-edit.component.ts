@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { PasswordModule } from 'primeng/password';
 import { LanguageService } from '../../services/language.service';
 import { UserService } from '../../services/user.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-password-edit',
@@ -17,6 +18,7 @@ export class PasswordEditComponent implements OnInit {
   private router = inject(Router);
   private langService = inject(LanguageService);
   private userService = inject(UserService);
+  private destroyRef = inject(DestroyRef);
 
   passwordData = {
     oldPassword: '',
@@ -26,12 +28,14 @@ export class PasswordEditComponent implements OnInit {
   t = this.langService.t;
 
   ngOnInit(): void {
-    this.langService.currentLang$.subscribe(() => {
-      this.t = this.langService.t;
-      if (this.errorMessage) {
-        this.errorMessage = this.t.passwordError;
-      }
-    });
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.t = this.langService.t;
+        if (this.errorMessage) {
+          this.errorMessage = this.t.passwordError;
+        }
+      });
   }
 
   onSubmit() {

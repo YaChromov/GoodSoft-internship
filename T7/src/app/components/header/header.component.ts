@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService, Lang } from '../../services/language.service';
 import { filter, map } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,7 @@ export class HeaderComponent implements OnInit {
   authService = inject(AuthService);
   langService = inject(LanguageService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   currentLang: Lang = 'ru';
   t = this.langService.t;
@@ -26,10 +28,12 @@ export class HeaderComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.langService.currentLang$.subscribe(lang => {
-      this.currentLang = lang;
-      this.t = this.langService.t;
-    });
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(lang => {
+        this.currentLang = lang;
+        this.t = this.langService.t;
+      });
   }
 
   setLanguage(lang: Lang): void {

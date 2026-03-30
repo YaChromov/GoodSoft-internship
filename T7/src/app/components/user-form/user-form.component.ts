@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -31,9 +31,9 @@ import { TranslationKeys } from '../../constants/translations';
   styleUrls: ['./user-form.component.css']
 })
 export class UserFormComponent implements OnInit {
-  // Используем inject() для чистоты кода, как в остальном проекте
   private langService = inject(LanguageService);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
   @Input() user: any = {};
   @Input() allRoles: string[] = [];
@@ -46,14 +46,15 @@ export class UserFormComponent implements OnInit {
   t: TranslationKeys = this.langService.t;
 
   ngOnInit(): void {
-    this.langService.currentLang$.subscribe(() => {
-      this.t = this.langService.t;
-    });
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.t = this.langService.t;
+      });
   }
 
   isSelfAdminLock(role: string): boolean {
     const currentLoggedInUser = this.authService.username;
-
     const isEditingSelf = this.isEditMode && this.user.login === currentLoggedInUser;
     const isAdminRole = (role === 'ROLE_ADMIN');
 
@@ -61,7 +62,6 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit() {
-
     this.formSubmit.emit(this.user);
   }
 }

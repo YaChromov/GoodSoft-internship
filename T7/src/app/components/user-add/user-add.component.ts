@@ -1,8 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { LanguageService } from '../../services/language.service';
 import { UserFormComponent } from '../user-form/user-form.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-add',
@@ -15,6 +16,7 @@ export class UserAddComponent implements OnInit {
   private userService = inject(UserService);
   private router = inject(Router);
   private langService = inject(LanguageService);
+  private destroyRef = inject(DestroyRef);
 
   user = {
     login: '',
@@ -32,9 +34,11 @@ export class UserAddComponent implements OnInit {
   t = this.langService.t;
 
   ngOnInit(): void {
-    this.langService.currentLang$.subscribe(() => {
-      this.t = this.langService.t;
-    });
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.t = this.langService.t;
+      });
   }
 
   onSubmit(userData: any) {
