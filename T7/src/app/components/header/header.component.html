@@ -13,30 +13,34 @@
          [class.active]="currentLang === 'en'">EN</a>
     </div>
 
-    <div class="auth-info" style="font-size: 13px; color: #888;">
-      <ng-container *ngIf="currentLang === 'ru'; else enAuth">Вы вошли как:</ng-container>
-      <ng-template #enAuth>Authenticated as:</ng-template>
+    <div class="auth-info"
+         *ngIf="authService.currentUser$ | async">
+
+      {{ t.authenticatedAs }}
 
       <a routerLink="/loginedit" class="user-link">
         <strong>{{ authService.username }}</strong>
       </a>
+
+      <button class="logout-btn" (click)="onLogout()">
+        {{ t.logout }}
+      </button>
     </div>
   </div>
 </header>
 
-<nav>
+<nav *ngIf="authService.currentUser$ | async">
   <div class="nav-links">
-    <a routerLink="/welcome">
-      {{ currentLang === 'ru' ? 'Главная' : 'Home' }}
-    </a>
-    <a routerLink="/userlist">
-      {{ currentLang === 'ru' ? 'Пользователи' : 'Users' }}
+    <a routerLink="/welcome">{{ t.home }}</a>
+
+    <a *ngIf="authService.isAdmin" routerLink="/userlist">
+      {{ t.users }}
     </a>
   </div>
 
-  <a *ngIf="authService.isAdmin"
+  <a *ngIf="authService.isAdmin && (isUserList$ | async)"
      routerLink="/useradd"
      class="btn-add">
-    {{ currentLang === 'ru' ? '+ Добавить пользователя' : '+ Add user' }}
+    {{ t.addUser }}
   </a>
 </nav>

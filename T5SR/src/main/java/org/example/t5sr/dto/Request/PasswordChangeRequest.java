@@ -1,6 +1,6 @@
-package org.example.t5sr.model;
+package org.example.t5sr.dto.Request;
 
-public class PasswordChangeForm {
+public class PasswordChangeRequest {
     private String oldPassword;
     private String newPassword;
 

@@ -1,62 +1,63 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
+import { LanguageService } from '../../services/language.service'; // Добавили
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    TableModule,
-    ButtonModule,
-    RouterLink
-  ],
+  imports: [CommonModule, TableModule, ButtonModule, RouterLink],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
   users: any[] = [];
 
-  currentUserLogin: string = 'admin';
-  isAdmin: boolean = true;
+  authService = inject(AuthService);
+  private userService = inject(UserService);
+  private langService = inject(LanguageService); // Добавили
 
-
-  constructor(
-    private userService: UserService,
-    private router: Router
-  ) {}
+  t = this.langService.t;
 
   ngOnInit() {
+    this.langService.currentLang$.subscribe(() => {
+      this.t = this.langService.t;
+    });
     this.loadUsers();
   }
 
-  loadUsers() {
+  get currentUserLogin(): string {
+    return this.authService.username;
+  }
 
+  loadUsers() {
     this.userService.getUsers().subscribe({
-      next: (data) => {
-        this.users = data;
-        console.log('Список пользователей обновлен:', data);
-      },
-      error: (err: any) => {
-        console.error('Ошибка загрузки:', err);
-        alert('Не удалось получить данные с сервера');
+      next: (data) => { this.users = data; },
+      error: (err) => {
+        console.error(err);
+        alert(this.t.loadUsersError);
       }
     });
   }
 
   deleteUser(login: string) {
-    if (confirm(`Вы уверены, что хотите удалить ${login}?`)) {
+    if (login === this.currentUserLogin) {
+      alert(this.t.selfDeleteError);
+      return;
+    }
+
+    if (confirm(`${this.t.deleteConfirm} ${login}?`)) {
       this.userService.deleteUser(login).subscribe({
         next: () => {
           this.users = this.users.filter(u => u.login !== login);
-          console.log('Пользователь успешно удален');
         },
-        error: (err: any) => {
-          console.error('Ошибка удаления:', err);
-          alert('Сервер отклонил запрос на удаление');
+        error: (err) => {
+          console.error(err);
+          alert(this.t.deleteServerError);
         }
       });
     }

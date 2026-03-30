@@ -10,7 +10,7 @@ import org.example.t5sr.mapper.UserMapper;
 import org.example.t5sr.model.Role;
 import org.example.t5sr.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,18 +24,17 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-   // private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper /* ,PasswordEncoder passwordEncoder*/) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper ,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
-       // this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
-
-    /*@Transactional
+    @Transactional
     public void changePassword(String login, String oldPassword, String newPassword) {
         User user = userRepository.findUserByLogin(login);
 
@@ -48,7 +47,7 @@ public class UserService {
         }
 
         userRepository.updateUserPassword(user, passwordEncoder.encode(newPassword));
-    }*/
+    }
 
     public UserResponse findUserByLogin(String login) {
         return userMapper.toResponse(userRepository.findUserByLogin(login));
@@ -105,7 +104,7 @@ public class UserService {
 
         Set<Role> roles = roleRepository.findRolesByNames(userRequest.getRoles());
         User entity = userMapper.toEntity(userRequest, roles);
-        //entity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        entity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         userRepository.addUser(entity);
     }

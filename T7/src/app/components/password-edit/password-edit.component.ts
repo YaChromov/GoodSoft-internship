@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { PasswordModule } from 'primeng/password';
+import { LanguageService } from '../../services/language.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-password-edit',
@@ -11,17 +13,39 @@ import { PasswordModule } from 'primeng/password';
   templateUrl: './password-edit.component.html',
   styleUrls: ['./password-edit.component.css']
 })
-export class PasswordEditComponent {
+export class PasswordEditComponent implements OnInit {
+  private router = inject(Router);
+  private langService = inject(LanguageService);
+  private userService = inject(UserService);
+
   passwordData = {
     oldPassword: '',
     newPassword: ''
   };
   errorMessage: string = '';
+  t = this.langService.t;
 
-  constructor(private router: Router) {}
+  ngOnInit(): void {
+    this.langService.currentLang$.subscribe(() => {
+      this.t = this.langService.t;
+      if (this.errorMessage) {
+        this.errorMessage = this.t.passwordError;
+      }
+    });
+  }
 
   onSubmit() {
-    console.log('Смена пароля:', this.passwordData);
-    this.router.navigate(['/welcome']);
+    this.errorMessage = '';
+
+    this.userService.changePassword(this.passwordData).subscribe({
+      next: () => {
+        console.log('Пароль успешно изменен');
+        this.router.navigate(['/welcome']);
+      },
+      error: (err) => {
+        console.error('Ошибка смены пароля:', err);
+        this.errorMessage = this.t.passwordError;
+      }
+    });
   }
 }

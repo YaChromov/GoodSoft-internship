@@ -1,5 +1,6 @@
 <app-user-form
-  title="РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ"
+  *ngIf="user"
+  [title]="t.userEditTitle"
   [user]="user"
   [allRoles]="allRoles"
   [isEditMode]="true"

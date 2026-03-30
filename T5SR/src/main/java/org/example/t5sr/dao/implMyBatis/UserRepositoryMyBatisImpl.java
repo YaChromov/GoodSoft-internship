@@ -7,7 +7,6 @@ import org.example.t5sr.model.Role;
 import org.example.t5sr.model.User;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository

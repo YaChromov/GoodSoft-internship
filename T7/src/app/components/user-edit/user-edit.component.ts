@@ -1,61 +1,75 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { UserFormComponent } from '../user-form/user-form.component';
+import { UserService, User } from '../../services/user.service';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-user-edit',
   standalone: true,
-
-  imports: [UserFormComponent],
+  imports: [UserFormComponent, CommonModule],
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css']
 })
 export class UserEditComponent implements OnInit {
-  user: any = {
-    login: '',
-    roles: [],
-    surname: '',
-    name: '',
-    patronymic: '',
-    email: '',
-    birthday: null
-  };
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private userService = inject(UserService);
+  private langService = inject(LanguageService);
 
+  user: User | null = null;
   allRoles: string[] = ['ADMIN', 'USER', 'MANAGER'];
-  currentUserLogin: string = 'admin';
   errorMessage: string = '';
+  isLoading: boolean = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  t = this.langService.t;
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.paramMap.get('id');
-    if (userId) {
-      this.loadUser(userId);
+    this.langService.currentLang$.subscribe(() => {
+      this.t = this.langService.t;
+    });
+
+    const login = this.route.snapshot.paramMap.get('id');
+    if (login) {
+      this.loadUser(login);
+    } else {
+      this.errorMessage = this.t.urlParamError;
     }
   }
 
   loadUser(login: string) {
-    this.user = {
-      login: login,
-      roles: ['ADMIN', 'USER'],
-      surname: 'Иванов',
-      name: 'Иван',
-      patronymic: 'Иванович',
-      email: 'ivanov@mail.com',
-      birthday: new Date('1990-05-15')
-    };
+    this.isLoading = true;
+    this.userService.getUserByLogin(login).subscribe({
+      next: (userData) => {
+        this.user = userData;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = this.t.loadUserError;
+        this.isLoading = false;
+        console.error(err);
+      }
+    });
   }
 
-  onSave(updatedUser: any) {
+  onSave(updatedUser: User) {
     if (!updatedUser.roles?.length) {
-      this.errorMessage = 'Выберите роль';
+      this.errorMessage = this.t.roleRequiredError;
       return;
     }
 
-    console.log('Сохранение отредактированного пользователя:', updatedUser);
-    this.router.navigate(['/userlist']);
+    this.errorMessage = '';
+    const currentLogin = this.user?.login;
+
+    if (currentLogin) {
+      this.userService.updateUser(currentLogin, updatedUser).subscribe({
+        next: () => this.router.navigate(['/userlist']),
+        error: (err) => {
+          this.errorMessage = this.t.saveError + ': ' + (err.message || '');
+          console.error(err);
+        }
+      });
+    }
   }
 }

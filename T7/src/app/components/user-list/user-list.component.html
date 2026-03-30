@@ -1,12 +1,12 @@
 <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
   <ng-template pTemplate="header">
     <tr>
-      <th>ЛОГИН</th>
-      <th>ФИО</th>
-      <th>EMAIL</th>
-      <th>ДАТА РОЖД.</th>
-      <th>РОЛИ</th>
-      <th style="width: 160px;">ДЕЙСТВИЯ</th>
+      <th>{{ t.loginCol }}</th>
+      <th>{{ t.fioCol }}</th>
+      <th>{{ t.emailCol }}</th>
+      <th>{{ t.birthdayCol }}</th>
+      <th>{{ t.rolesCol }}</th>
+      <th style="width: 160px;">{{ t.actionsCol }}</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-u>
@@ -25,13 +25,17 @@
       <td>
         <button pButton
                 type="button"
-                label="ИЗМЕНИТЬ"
+                [label]="t.editBtn"
                 class="action-btn"
                 [routerLink]="['/useredit', u.login]">
         </button>
         <button *ngIf="currentUserLogin !== u.login"
-                pButton type="button" label="УДАЛИТЬ"
-                class="action-btn del-btn"></button>
+                pButton
+                type="button"
+                [label]="t.deleteBtn"
+                class="action-btn del-btn"
+                (click)="deleteUser(u.login)">
+        </button>
       </td>
     </tr>
   </ng-template>

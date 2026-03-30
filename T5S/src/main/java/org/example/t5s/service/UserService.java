@@ -1,6 +1,7 @@
 package org.example.t5s.service;
 
 
+import jakarta.annotation.PostConstruct;
 import org.example.t5s.dao.RoleRepository;
 import org.example.t5s.dao.UserRepository;
 import org.example.t5s.dto.Request.UserRequest;
@@ -34,7 +35,6 @@ public class UserService {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     @Transactional
     public void changePassword(String login, String oldPassword, String newPassword) {
