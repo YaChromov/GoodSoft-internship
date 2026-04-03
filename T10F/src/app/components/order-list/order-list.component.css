@@ -47,7 +47,6 @@
   border-left: 1px solid #ddd !important;
 }
 
-/* Базовый стиль кнопок */
 :host ::ng-deep .p-button.action-btn {
   height: 24px !important;
   padding: 0 10px !important;
@@ -68,18 +67,16 @@
   border-color: #999 !important;
 }
 
-/* Кнопка удаления (активная) */
+
 :host ::ng-deep .p-button.action-btn.del-btn {
   color: #a00 !important;
 }
 
-/* Кнопка оплаты */
 :host ::ng-deep .p-button.action-btn.pay-btn {
   color: #28a745 !important;
   border-color: #28a745 !important;
 }
 
-/* Состояние DISABLED (серая кнопка) */
 :host ::ng-deep .p-button.action-btn:disabled {
   background: #eee !important;
   border-color: #ccc !important;
