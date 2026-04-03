@@ -1,8 +1,7 @@
 package org.example.t10b.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+
 import java.security.Principal;
 
 import org.example.t10b.dto.Request.OrderRequest;
@@ -71,18 +70,8 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id, Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        String currentLogin = authentication.getName();
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(role -> role.equals("ROLE_ADMIN"));
-
-        orderService.deleteOrder(id, currentLogin, isAdmin);
-
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
 }

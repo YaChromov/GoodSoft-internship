@@ -22,7 +22,7 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
   {
-    path: 'loginedit',
+    path: 'password-edit',
     component: PasswordEditComponent,
     canActivate: [authGuard]
   },

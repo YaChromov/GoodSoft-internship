@@ -10,6 +10,9 @@ import org.example.t10b.mapper.OrderMapper;
 import org.example.t10b.repository.OrderRepository;
 import org.example.t10b.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,9 +92,20 @@ public class OrderService {
     }
 
     @Transactional
-    public void deleteOrder(Long id, String currentLogin, boolean isAdmin) {
+    public void deleteOrder(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new BusinessException("User is not authenticated");
+        }
+
+        final String currentLogin = auth.getName();
+        final boolean isAdmin = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN"));
+
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Order not found"));
+
         if (!isAdmin && !order.getClient().getLogin().equals(currentLogin)) {
             throw new BusinessException("Access denied: You can only delete your own orders");
         }

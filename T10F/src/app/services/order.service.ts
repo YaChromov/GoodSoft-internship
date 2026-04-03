@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { OrderStatus } from '../models/order-status.enum';
 
 export interface OrderRequest {
   capacity: number;
@@ -16,7 +17,7 @@ export interface OrderResponse {
   capacity: number;
   apartmentClass: string;
   stayDays: number;
-  status: string;
+  status: OrderStatus;
   paid: boolean;
   createdAt: string;
   processedAt?: string;
@@ -35,6 +36,7 @@ export class OrderService {
     const url = this.authService.isAdmin ? this.apiUrl : `${this.apiUrl}/my`;
     return this.http.get<OrderResponse[]>(url);
   }
+
   createOrder(order: OrderRequest): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(this.apiUrl, order);
   }
@@ -47,7 +49,7 @@ export class OrderService {
     return this.http.patch<void>(`${this.apiUrl}/${id}/pay`, {});
   }
 
-  updateStatus(id: number, newStatus: 'CONFIRMED' | 'REJECTED'): Observable<void> {
+  updateStatus(id: number, newStatus: OrderStatus.CONFIRMED | OrderStatus.REJECTED): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/${id}/status`, {}, {
       params: { newStatus }
     });

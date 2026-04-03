@@ -4,6 +4,7 @@ import { OrderService, OrderResponse } from '../../services/order.service';
 import { LanguageService } from '../../services/language.service';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { OrderStatus } from '../../models/order-status.enum';
 
 @Component({
   selector: 'app-order-pending',
@@ -16,6 +17,9 @@ export class OrderPendingComponent implements OnInit {
   private orderService = inject(OrderService);
   private langService = inject(LanguageService);
 
+
+  public readonly OrderStatus = OrderStatus;
+
   t = this.langService.t;
   pendingOrders: OrderResponse[] = [];
 
@@ -26,14 +30,14 @@ export class OrderPendingComponent implements OnInit {
   loadPending() {
     this.orderService.getOrders().subscribe({
       next: (allOrders) => {
-        this.pendingOrders = allOrders.filter(o => o.status === 'PENDING');
+        // Используем enum для фильтрации
+        this.pendingOrders = allOrders.filter(o => o.status === OrderStatus.PENDING);
       },
       error: (err) => console.error(this.t.loadOrdersError, err)
     });
   }
-
-  changeStatus(id: number, status: 'CONFIRMED' | 'REJECTED') {
-    const question = status === 'CONFIRMED'
+  changeStatus(id: number, status: OrderStatus.CONFIRMED | OrderStatus.REJECTED) {
+    const question = status === OrderStatus.CONFIRMED
       ? `${this.t.confirmStatus}?`
       : `${this.t.rejectStatus}?`;
 

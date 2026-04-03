@@ -25,14 +25,14 @@
                   type="button"
                   [label]="t.confirmStatus"
                   class="p-button-sm action-btn approve-btn"
-                  (click)="changeStatus(o.id, 'CONFIRMED')">
+                  (click)="changeStatus(o.id, OrderStatus.CONFIRMED)">
           </button>
 
           <button pButton
                   type="button"
                   [label]="t.rejectStatus"
                   class="p-button-sm p-button-danger action-btn del-btn"
-                  (click)="changeStatus(o.id, 'REJECTED')">
+                  (click)="changeStatus(o.id, OrderStatus.REJECTED)">
           </button>
         </td>
       </tr>
