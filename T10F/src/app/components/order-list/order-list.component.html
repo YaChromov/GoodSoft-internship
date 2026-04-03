@@ -1,0 +1,48 @@
+<div class="orders-container">
+  <p-table [value]="orders" [loading]="loading" class="custom-table">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="col-id">ID</th>
+        <th class="col-client">{{ t.clientCol }}</th>
+        <th class="col-class">{{ t.classCol }}</th>
+        <th class="col-cap">{{ t.capacityCol }}</th>
+        <th class="col-days">{{ t.daysCol }}</th>
+        <th class="col-status">{{ t.statusCol }}</th>
+        <th class="col-actions">{{ t.actionsCol }}</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-o>
+      <tr>
+        <td class="cell-id">#{{ o.id }}</td>
+        <td>{{ o.clientUsername }}</td>
+        <td>{{ o.apartmentClass }}</td>
+        <td>{{ o.capacity }}</td>
+        <td>{{ o.stayDays }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="'status-' + o.status?.toLowerCase()">
+            {{ getTranslatedStatus(o.status) }}
+          </span>
+        </td>
+
+        <td class="cell-actions">
+          <button *ngIf="!authService.isAdmin && o.status === 'CONFIRMED'"
+                  pButton
+                  type="button"
+                  [label]="t.paidCol"
+                  class="p-button-sm action-btn pay-btn"
+                  (click)="payOrder(o.id)">
+          </button>
+
+          <button pButton
+                  type="button"
+                  [label]="t.deleteBtn"
+                  class="p-button-sm action-btn del-btn"
+                  [disabled]="!authService.isAdmin && o.status !== 'PENDING'"
+                  (click)="deleteOrder(o.id)">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

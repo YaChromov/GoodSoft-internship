@@ -1,0 +1,110 @@
+.orders-container {
+  padding: 20px;
+}
+
+:host ::ng-deep .p-datatable-wrapper {
+  background: white;
+  box-shadow: 5px 5px 15px #eee;
+  border: 1px solid #ccc;
+}
+
+:host ::ng-deep .p-datatable table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 60rem !important;
+}
+
+:host ::ng-deep .p-datatable thead th {
+  background: linear-gradient(180deg, #eee 0%, #ccc 100%) !important;
+  color: #444 !important;
+  text-transform: uppercase !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  padding: 6px 12px !important;
+  border: 1px solid #aaa !important;
+  text-align: left !important;
+}
+
+:host ::ng-deep .p-datatable tbody td {
+  padding: 4px 12px !important;
+  border: 1px solid #ddd !important;
+  font-size: 13px !important;
+  color: #333 !important;
+  vertical-align: middle !important;
+}
+
+:host ::ng-deep .p-datatable tbody tr:nth-child(even) td { background-color: #f8f8f8 !important; }
+:host ::ng-deep .p-datatable tbody tr:nth-child(odd) td { background-color: #ffffff !important; }
+:host ::ng-deep .p-datatable tbody tr:hover td { background-color: #f0f0f0 !important; }
+
+:host ::ng-deep .p-datatable tbody td:last-child {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+  border-left: 1px solid #ddd !important;
+}
+
+/* Базовый стиль кнопок */
+:host ::ng-deep .p-button.action-btn {
+  height: 24px !important;
+  padding: 0 10px !important;
+  background: linear-gradient(#fff, #f2f2f2) !important;
+  border: 1px solid #bbb !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+  color: #555 !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+:host ::ng-deep .p-button.action-btn:hover:not(:disabled) {
+  background: linear-gradient(#f2f2f2, #e6e6e6) !important;
+  border-color: #999 !important;
+}
+
+/* Кнопка удаления (активная) */
+:host ::ng-deep .p-button.action-btn.del-btn {
+  color: #a00 !important;
+}
+
+/* Кнопка оплаты */
+:host ::ng-deep .p-button.action-btn.pay-btn {
+  color: #28a745 !important;
+  border-color: #28a745 !important;
+}
+
+/* Состояние DISABLED (серая кнопка) */
+:host ::ng-deep .p-button.action-btn:disabled {
+  background: #eee !important;
+  border-color: #ccc !important;
+  color: #999 !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .p-button.action-btn.del-btn:disabled .p-button-label,
+:host ::ng-deep .p-button.action-btn.del-btn:disabled {
+  color: #999 !important;
+}
+
+.status-badge {
+  display: inline-block;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-confirmed { border-color: #5cb85c; color: #5cb85c; background: #f0f9f0; }
+.status-rejected { border-color: #d9534f; color: #d9534f; background: #fff1f0; }
+.status-paid { border-color: #0275d8; color: #0275d8; background: #e6f2ff; }
+.status-pending { border-color: #f0ad4e; color: #f0ad4e; background: #fcf8f2; }
