@@ -24,76 +24,86 @@ import { TranslationKeys } from '../../constants/translations';
   styleUrls: ['./order-list.component.css']
 })
 export class OrderListComponent implements OnInit {
-  orders: OrderResponse[] = [];
-  loading: boolean = true;
+  private readonly orderService: OrderService = inject(OrderService);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
+  public readonly authService: AuthService = inject(AuthService);
 
-  private orderService = inject(OrderService);
-  private langService = inject(LanguageService);
-  private destroyRef = inject(DestroyRef);
-  public authService = inject(AuthService);
+  public orders: OrderResponse[] = [];
+  public loading: boolean = true;
+  public t: TranslationKeys = this.langService.t;
 
-  t = this.langService.t;
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .subscribe((): void => {
         this.t = this.langService.t;
       });
 
     this.loadOrders();
   }
 
-  loadOrders(): void {
+  public loadOrders(): void {
     this.loading = true;
     this.orderService.getOrders()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => {
+        next: (data: OrderResponse[]): void => {
           this.orders = data;
           this.loading = false;
         },
-        error: (err) => {
-          console.error('Failed to load orders:', err);
-          this.loading = false;
-          alert(this.t.loadOrdersError || 'Error loading orders');
+        error: (err: unknown): void => {
+          this.handleLoadError(err);
         }
       });
   }
 
-  getTranslatedStatus(status: string): string {
+  public getTranslatedStatus(status: string): string {
     if (!status) return '';
-    const key = ('status' + status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()) as keyof TranslationKeys;
-    return (this.t as any)[key] || status;
+
+    const key = `status${status.charAt(0).toUpperCase()}${status.slice(1).toLowerCase()}` as keyof TranslationKeys;
+    return this.t[key] ? (this.t[key] as string) : status;
   }
 
-  payOrder(id: number): void {
-    if (confirm(`${this.t.paidCol}? #${id}`)) {
-      this.orderService.payOrder(id).subscribe({
-        next: () => {
-          this.loadOrders();
-        },
-        error: (err) => {
-          console.error('Payment error:', err);
-          alert('Ошибка при проведении оплаты');
-        }
-      });
-    }
-  }
-
-  deleteOrder(id: number): void {
-    const confirmMsg = `${this.t.deleteOrderConfirm} ${id}?`;
+  public payOrder(id: number): void {
+    const confirmMsg: string = `${this.t.paidCol}? #${id}`;
 
     if (confirm(confirmMsg)) {
-      this.orderService.deleteOrder(id).subscribe({
-        next: () => {
-          this.orders = this.orders.filter(o => o.id !== id);
-        },
-        error: (err) => {
-          console.error('Delete error:', err);
-          alert(this.t.deleteServerError || 'Ошибка при удалении');
-        }
-      });
+      this.orderService.payOrder(id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (): void => {
+            this.loadOrders();
+          },
+          error: (err: unknown): void => {
+            console.error('Payment error:', err);
+            alert('Ошибка при проведении оплаты');
+          }
+        });
     }
+  }
+
+  public deleteOrder(id: number): void {
+    const confirmMsg: string = `${this.t.deleteOrderConfirm} ${id}?`;
+
+    if (confirm(confirmMsg)) {
+      this.orderService.deleteOrder(id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (): void => {
+            this.orders = this.orders.filter((o: OrderResponse) => o.id !== id);
+          },
+          error: (err: unknown): void => {
+            console.error('Delete error:', err);
+            alert(this.t.deleteServerError || 'Ошибка при удалении');
+          }
+        });
+    }
+  }
+
+  private handleLoadError(err: unknown): void {
+    console.error('Failed to load orders:', err);
+    this.loading = false;
+    alert(this.t.loadOrdersError || 'Error loading orders');
   }
 }

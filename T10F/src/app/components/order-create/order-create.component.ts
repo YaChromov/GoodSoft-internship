@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { OrderService, OrderRequest } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
@@ -14,36 +16,55 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './order-create.component.html',
   styleUrls: ['./order-create.component.css']
 })
-export class OrderCreateComponent {
-  private orderService = inject(OrderService);
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private langService = inject(LanguageService);
+export class OrderCreateComponent implements OnInit {
+  private readonly orderService: OrderService = inject(OrderService);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly router: Router = inject(Router);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
-  t = this.langService.t;
-  errorMessage: string = '';
+  public t: any = this.langService.t;
+  public errorMessage: string = '';
 
-  order: OrderRequest = {
+  public order: OrderRequest = {
     capacity: 1,
     apartmentClass: '',
     stayDays: 1
   };
 
-  get currentUser(): string {
+  public get currentUser(): string {
     return this.authService.username;
   }
 
-  onSubmit() {
+  public ngOnInit(): void {
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((): void => {
+        this.t = this.langService.t;
+      });
+  }
+
+  public onSubmit(): void {
     this.errorMessage = '';
 
-    this.orderService.createOrder(this.order).subscribe({
-      next: () => {
-        this.router.navigate(['/orders']);
-      },
-      error: (err) => {
-        console.error(err);
-        this.errorMessage = this.t.saveError || 'Ошибка при создании заказа';
-      }
-    });
+    this.orderService.createOrder(this.order)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (): void => {
+          this.handleSuccessNavigation();
+        },
+        error: (err: unknown): void => {
+          this.handleError(err);
+        }
+      });
+  }
+
+  private handleSuccessNavigation(): void {
+    void this.router.navigate(['/orders']);
+  }
+
+  private handleError(err: unknown): void {
+    console.error('Order creation failed:', err);
+    this.errorMessage = this.t.saveError || 'Ошибка при создании заказа';
   }
 }

@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserService } from '../../services/user.service';
 import { LanguageService } from '../../services/language.service';
 import { UserFormComponent } from '../user-form/user-form.component';
-import { AuthService} from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -15,13 +15,13 @@ import { AuthService} from '../../services/auth.service';
   styleUrls: ['./registration.component.css']
 })
 export class RegistrationComponent implements OnInit {
-  private userService = inject(UserService);
-  private router = inject(Router);
-  private langService = inject(LanguageService);
-  private destroyRef = inject(DestroyRef);
-  private authService = inject(AuthService);
+  private readonly userService: UserService = inject(UserService);
+  private readonly router: Router = inject(Router);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
+  private readonly authService: AuthService = inject(AuthService);
 
-  user = {
+  public user = {
     login: '',
     password: '',
     roles: ['USER'],
@@ -29,33 +29,50 @@ export class RegistrationComponent implements OnInit {
     name: '',
     patronymic: '',
     email: '',
-    birthday: null
+    birthday: null as string | null
   };
 
-  t = this.langService.t;
+  public t: any = this.langService.t;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .subscribe((): void => {
         this.t = this.langService.t;
       });
   }
 
-  onSubmit(userData: any) {
-    this.authService.register(userData).subscribe({
-      next: (response) => {
-        console.log('Регистрация успешна', response);
-        const targetRoute = this.authService.isAuthenticated() ? '/welcome' : '/login';
+  public onSubmit(userData: any): void {
+    this.authService.register(userData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: any): void => {
+          this.handleRegistrationSuccess(response);
+        },
+        error: (err: any): void => {
+          this.handleRegistrationError(err);
+        }
+      });
+  }
 
-        this.router.navigate([targetRoute]);
-      },
-      error: (err: any) => {
-        console.error('Ошибка при регистрации:', err);
+  private handleRegistrationSuccess(response: any): void {
+    console.log('Registration successful:', response);
 
-        const errorMessage = err.error?.message || this.t.saveError || 'Registration failed';
-        alert(errorMessage);
-      }
-    });
+    const targetRoute: string = this.authService.isAuthenticated()
+      ? '/welcome'
+      : '/login';
+
+    void this.router.navigate([targetRoute]);
+  }
+
+  private handleRegistrationError(err: any): void {
+    console.error('Registration failed:', err);
+
+    const errorMessage: string = err.error?.message
+      || this.t.saveError
+      || 'Registration failed';
+
+    alert(errorMessage);
   }
 }

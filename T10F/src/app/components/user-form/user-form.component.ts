@@ -30,39 +30,39 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./user-form.component.css']
 })
 export class UserFormComponent implements OnInit {
-  private langService = inject(LanguageService);
-  private authService = inject(AuthService);
-  private destroyRef = inject(DestroyRef);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
-  @Input() user: any = {};
-  @Input() allRoles: string[] = [];
-  @Input() title: string = '';
-  @Input() isEditMode: boolean = false;
-  @Input() errorMessage?: string;
-  @Input() hideRoles: boolean = false;
+  @Input() public user: any = {};
+  @Input() public allRoles: string[] = [];
+  @Input() public title: string = '';
+  @Input() public isEditMode: boolean = false;
+  @Input() public errorMessage?: string;
+  @Input() public hideRoles: boolean = false;
 
-  t: any;
+  public t: any;
 
-  @Output() formSubmit = new EventEmitter<any>();
+  @Output() public readonly formSubmit: EventEmitter<any> = new EventEmitter<any>();
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.t = this.langService.t;
 
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .subscribe((): void => {
         this.t = this.langService.t;
       });
   }
 
-  isSelfAdminLock(role: string): boolean {
-    const currentLoggedInUser = this.authService.username;
-    const isEditingSelf = this.isEditMode && this.user.login === currentLoggedInUser;
-    const isAdminRole = (role === 'ROLE_ADMIN');
+  public isSelfAdminLock(role: string): boolean {
+    const currentLoggedInUser: string = this.authService.username;
+    const isEditingSelf: boolean = this.isEditMode && this.user.login === currentLoggedInUser;
+    const isAdminRole: boolean = (role === 'ROLE_ADMIN');
     return isEditingSelf && isAdminRole;
   }
 
-  onSubmit() {
+  public onSubmit(): void {
     this.formSubmit.emit(this.user);
   }
 }

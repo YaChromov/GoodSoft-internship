@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, DestroyRef } from '@angular/core';
-import { Router, RouterLink } from '@angular/router'; // Импорт RouterLink
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../../services/language.service';
 import { FormsModule } from '@angular/forms';
@@ -14,20 +14,23 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  private authService = inject(AuthService);
-  private langService = inject(LanguageService);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly router: Router = inject(Router);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
-  loginData = { login: '', password: '' };
-  errorMessage = '';
+  public loginData = {
+    login: '',
+    password: ''
+  };
 
-  t = this.langService.t;
+  public errorMessage: string = '';
+  public t: any = this.langService.t;
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .subscribe((): void => {
         this.t = this.langService.t;
         if (this.errorMessage) {
           this.errorMessage = this.t.loginError;
@@ -35,18 +38,25 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  onLogin(): void {
-    this.authService.login(this.loginData).subscribe({
-      next: () => {
-        if (this.authService.isAdmin) {
-          this.router.navigate(['/order-pending']);
-        } else {
-          this.router.navigate(['/order-create']);
+  public onLogin(): void {
+    this.authService.login(this.loginData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (): void => {
+          this.handleNavigation();
+        },
+        error: (err: unknown): void => {
+          console.error('Auth error:', err);
+          this.errorMessage = this.t.loginError;
         }
-      },
-      error: () => {
-        this.errorMessage = this.t.loginError;
-      }
-    });
+      });
+  }
+
+  private handleNavigation(): void {
+    const route: string = this.authService.isAdmin
+      ? '/order-pending'
+      : '/order-create';
+
+    void this.router.navigate([route]);
   }
 }

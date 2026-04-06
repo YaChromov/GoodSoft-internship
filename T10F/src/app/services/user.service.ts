@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface User {
   login: string;
@@ -16,9 +16,9 @@ export interface User {
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
+  private readonly http: HttpClient = inject(HttpClient);
 
-  changePassword(passwordData: any): Observable<void> {
+  public changePassword(passwordData: any): Observable<void> {
     return this.http.patch<void>(`/api/users/change-password`, passwordData);
   }
 }

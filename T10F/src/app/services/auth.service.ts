@@ -1,49 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<any>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  private readonly http: HttpClient = inject(HttpClient);
 
-  constructor(private http: HttpClient) {
+  private readonly currentUserSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public readonly currentUser$: Observable<any> = this.currentUserSubject.asObservable();
+
+  constructor() {
     this.decodeToken();
   }
 
-  register(userData: any): Observable<any> {
+  public register(userData: any): Observable<any> {
     return this.http.post<any>('/api/auth/register', userData).pipe(
-      tap(res => {
-        if (res && res.token) {
+      tap((res: any): void => {
+        if (res?.token) {
           this.handleAuthSuccess(res.token);
         }
       })
     );
   }
 
-  login(credentials: any): Observable<any> {
+  public login(credentials: any): Observable<any> {
     return this.http.post<any>('/api/auth/login', credentials).pipe(
-      tap(res => {
-        if (res && res.token) {
+      tap((res: any): void => {
+        if (res?.token) {
           this.handleAuthSuccess(res.token);
         }
       })
     );
   }
 
-  private handleAuthSuccess(token: string) {
+  private handleAuthSuccess(token: string): void {
     localStorage.setItem('auth_token', token);
     this.decodeToken();
   }
 
-  private decodeToken() {
-    const token = localStorage.getItem('auth_token');
+  private decodeToken(): void {
+    const token: string | null = localStorage.getItem('auth_token');
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        const payload: any = JSON.parse(atob(token.split('.')[1]));
         this.currentUserSubject.next(payload);
-      } catch (e) {
+      } catch (e: unknown) {
         console.error('Ошибка декодирования токена', e);
         this.logout();
       }
@@ -52,11 +54,11 @@ export class AuthService {
     }
   }
 
-  getUserRole(): string {
-    const user = this.currentUserSubject.value;
-    if (!user || !user.roles) return 'GUEST';
+  public getUserRole(): string {
+    const user: any = this.currentUserSubject.value;
+    if (!user?.roles) return 'GUEST';
 
-    const roles = Array.isArray(user.roles) ? user.roles : [user.roles];
+    const roles: string[] = Array.isArray(user.roles) ? user.roles : [user.roles];
 
     if (roles.includes('ROLE_ADMIN') || roles.includes('ADMIN')) {
       return 'ADMIN';
@@ -67,19 +69,19 @@ export class AuthService {
     return 'GUEST';
   }
 
-  get isAdmin(): boolean {
+  public get isAdmin(): boolean {
     return this.getUserRole() === 'ADMIN';
   }
 
-  get username(): string {
+  public get username(): string {
     return this.currentUserSubject.value?.sub || 'Guest';
   }
 
-  getToken(): string | null {
+  public getToken(): string | null {
     return localStorage.getItem('auth_token');
   }
 
-  logout() {
+  public logout(): void {
     localStorage.removeItem('auth_token');
     this.currentUserSubject.next(null);
   }

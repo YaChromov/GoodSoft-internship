@@ -1,9 +1,8 @@
 import { Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { RouterModule, Router, NavigationEnd, Event } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LanguageService, Lang } from '../../services/language.service';
-import { filter, map } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -14,34 +13,32 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  authService = inject(AuthService);
-  langService = inject(LanguageService);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
 
-  currentLang: Lang = 'ru';
-  t = this.langService.t;
+  public readonly authService: AuthService = inject(AuthService);
+  public readonly langService: LanguageService = inject(LanguageService);
 
-  isUserList$ = this.router.events.pipe(
-    filter(event => event instanceof NavigationEnd),
-    map((event: any) => event.urlAfterRedirects.includes('/userlist'))
-  );
+  private readonly router: Router = inject(Router);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
+
+  public currentLang: Lang = 'ru';
+  public t: any = this.langService.t;
+
+  public ngOnInit(): void {
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(lang => {
+      .subscribe((lang: Lang): void => {
         this.currentLang = lang;
         this.t = this.langService.t;
       });
   }
 
-  setLanguage(lang: Lang): void {
+  public setLanguage(lang: Lang): void {
     this.langService.setLanguage(lang);
   }
 
-  onLogout(): void {
+  public onLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    void this.router.navigate(['/login']);
   }
 }

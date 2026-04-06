@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TRANSLATIONS } from '../constants/translations';
-
 
 export type Lang = 'ru' | 'en';
 
@@ -9,22 +8,21 @@ export type Lang = 'ru' | 'en';
   providedIn: 'root'
 })
 export class LanguageService {
-  private langSubject = new BehaviorSubject<Lang>(
+  private readonly langSubject: BehaviorSubject<Lang> = new BehaviorSubject<Lang>(
     (localStorage.getItem('app_lang') as Lang) || 'ru'
   );
 
-  public currentLang$ = this.langSubject.asObservable();
+  public readonly currentLang$: Observable<Lang> = this.langSubject.asObservable();
 
-  get currentLang(): Lang {
+  public get currentLang(): Lang {
     return this.langSubject.value;
   }
 
-
-  get t() {
+  public get t(): any {
     return TRANSLATIONS[this.currentLang];
   }
 
-  setLanguage(lang: Lang): void {
+  public setLanguage(lang: Lang): void {
     localStorage.setItem('app_lang', lang);
     this.langSubject.next(lang);
   }

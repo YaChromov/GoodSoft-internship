@@ -27,29 +27,32 @@ export interface OrderResponse {
   providedIn: 'root'
 })
 export class OrderService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
+  private readonly http: HttpClient = inject(HttpClient);
+  private readonly authService: AuthService = inject(AuthService);
 
-  private readonly apiUrl = '/api/orders';
+  private readonly apiUrl: string = '/api/orders';
 
-  getOrders(): Observable<OrderResponse[]> {
-    const url = this.authService.isAdmin ? this.apiUrl : `${this.apiUrl}/my`;
+  public getOrders(): Observable<OrderResponse[]> {
+    const url: string = this.authService.isAdmin ? this.apiUrl : `${this.apiUrl}/my`;
     return this.http.get<OrderResponse[]>(url);
   }
 
-  createOrder(order: OrderRequest): Observable<OrderResponse> {
+  public createOrder(order: OrderRequest): Observable<OrderResponse> {
     return this.http.post<OrderResponse>(this.apiUrl, order);
   }
 
-  deleteOrder(id: number): Observable<void> {
+  public deleteOrder(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  payOrder(id: number): Observable<void> {
+  public payOrder(id: number): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/${id}/pay`, {});
   }
 
-  updateStatus(id: number, newStatus: OrderStatus.CONFIRMED | OrderStatus.REJECTED): Observable<void> {
+  public updateStatus(
+    id: number,
+    newStatus: OrderStatus.CONFIRMED | OrderStatus.REJECTED
+  ): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/${id}/status`, {}, {
       params: { newStatus }
     });

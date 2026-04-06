@@ -1,5 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { OrderService, OrderResponse } from '../../services/order.service';
 import { LanguageService } from '../../services/language.service';
 import { TableModule } from 'primeng/table';
@@ -14,43 +16,68 @@ import { OrderStatus } from '../../models/order-status.enum';
   styleUrls: ['./order-pending.component.css']
 })
 export class OrderPendingComponent implements OnInit {
-  private orderService = inject(OrderService);
-  private langService = inject(LanguageService);
-
+  private readonly orderService: OrderService = inject(OrderService);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
   public readonly OrderStatus = OrderStatus;
 
-  t = this.langService.t;
-  pendingOrders: OrderResponse[] = [];
+  public t: any = this.langService.t;
+  public pendingOrders: OrderResponse[] = [];
+  public loading: boolean = false;
 
-  ngOnInit() {
+  public ngOnInit(): void {
+    this.langService.currentLang$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((): void => {
+        this.t = this.langService.t;
+      });
+
     this.loadPending();
   }
 
-  loadPending() {
-    this.orderService.getOrders().subscribe({
-      next: (allOrders) => {
-        // Используем enum для фильтрации
-        this.pendingOrders = allOrders.filter(o => o.status === OrderStatus.PENDING);
-      },
-      error: (err) => console.error(this.t.loadOrdersError, err)
-    });
+  public loadPending(): void {
+    this.loading = true;
+    this.orderService.getOrders()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (allOrders: OrderResponse[]): void => {
+          this.pendingOrders = allOrders.filter(
+            (o: OrderResponse) => o.status === OrderStatus.PENDING
+          );
+          this.loading = false;
+        },
+        error: (err: unknown): void => {
+          this.handleError(this.t.loadOrdersError, err);
+          this.loading = false;
+        }
+      });
   }
-  changeStatus(id: number, status: OrderStatus.CONFIRMED | OrderStatus.REJECTED) {
-    const question = status === OrderStatus.CONFIRMED
+
+  public changeStatus(
+    id: number,
+    status: OrderStatus.CONFIRMED | OrderStatus.REJECTED
+  ): void {
+    const question: string = status === OrderStatus.CONFIRMED
       ? `${this.t.confirmStatus}?`
       : `${this.t.rejectStatus}?`;
 
     if (confirm(`${question} (ID: #${id})`)) {
-      this.orderService.updateStatus(id, status).subscribe({
-        next: () => {
-          this.pendingOrders = this.pendingOrders.filter(o => o.id !== id);
-        },
-        error: (err) => {
-          console.error(err);
-          alert(this.t.saveError);
-        }
-      });
+      this.orderService.updateStatus(id, status)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (): void => {
+            this.pendingOrders = this.pendingOrders.filter((o: OrderResponse) => o.id !== id);
+          },
+          error: (err: unknown): void => {
+            this.handleError(this.t.saveError, err);
+            alert(this.t.saveError);
+          }
+        });
     }
+  }
+
+  private handleError(message: string, err: unknown): void {
+    console.error(message, err);
   }
 }
