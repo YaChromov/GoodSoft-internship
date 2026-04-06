@@ -24,10 +24,10 @@ import { TranslationKeys } from '../../constants/translations';
   styleUrls: ['./order-list.component.css']
 })
 export class OrderListComponent implements OnInit {
+  public readonly authService: AuthService = inject(AuthService);
   private readonly orderService: OrderService = inject(OrderService);
   private readonly langService: LanguageService = inject(LanguageService);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
-  public readonly authService: AuthService = inject(AuthService);
 
   public orders: OrderResponse[] = [];
   public loading: boolean = true;

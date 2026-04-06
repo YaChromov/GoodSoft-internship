@@ -1,9 +1,10 @@
 import { Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, NavigationEnd, Event } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { AuthService } from '../../services/auth.service';
 import { LanguageService, Lang } from '../../services/language.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-header',
@@ -13,16 +14,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
   public readonly authService: AuthService = inject(AuthService);
   public readonly langService: LanguageService = inject(LanguageService);
+  public currentLang: Lang = 'ru';
+  public t: any = this.langService.t;
 
   private readonly router: Router = inject(Router);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
-
-
-  public currentLang: Lang = 'ru';
-  public t: any = this.langService.t;
 
   public ngOnInit(): void {
     this.langService.currentLang$

@@ -21,7 +21,6 @@ export class OrderPendingComponent implements OnInit {
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
   public readonly OrderStatus = OrderStatus;
-
   public t: any = this.langService.t;
   public pendingOrders: OrderResponse[] = [];
   public loading: boolean = false;

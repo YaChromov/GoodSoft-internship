@@ -25,7 +25,6 @@ export class PasswordEditComponent implements OnInit {
     oldPassword: '',
     newPassword: ''
   };
-
   public errorMessage: string = '';
   public t: any = this.langService.t;
 

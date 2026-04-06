@@ -41,13 +41,11 @@ export class UserFormComponent implements OnInit {
   @Input() public errorMessage?: string;
   @Input() public hideRoles: boolean = false;
 
-  public t: any;
-
   @Output() public readonly formSubmit: EventEmitter<any> = new EventEmitter<any>();
 
-  public ngOnInit(): void {
-    this.t = this.langService.t;
+  public t: any = this.langService.t;
 
+  public ngOnInit(): void {
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((): void => {

@@ -17,26 +17,27 @@ import { InputTextModule } from 'primeng/inputtext';
   styleUrls: ['./order-create.component.css']
 })
 export class OrderCreateComponent implements OnInit {
-  private readonly orderService: OrderService = inject(OrderService);
-  private readonly authService: AuthService = inject(AuthService);
-  private readonly router: Router = inject(Router);
-  private readonly langService: LanguageService = inject(LanguageService);
-  private readonly destroyRef: DestroyRef = inject(DestroyRef);
-
-  public t: any = this.langService.t;
+  public t: any;
   public errorMessage: string = '';
-
   public order: OrderRequest = {
     capacity: 1,
     apartmentClass: '',
     stayDays: 1
   };
 
+  private readonly orderService: OrderService = inject(OrderService);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly router: Router = inject(Router);
+  private readonly langService: LanguageService = inject(LanguageService);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
+
   public get currentUser(): string {
     return this.authService.username;
   }
 
   public ngOnInit(): void {
+    this.t = this.langService.t;
+
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((): void => {

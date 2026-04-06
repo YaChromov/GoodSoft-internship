@@ -31,11 +31,9 @@ export class RegistrationComponent implements OnInit {
     email: '',
     birthday: null as string | null
   };
-
   public t: any = this.langService.t;
 
   public ngOnInit(): void {
-
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((): void => {
