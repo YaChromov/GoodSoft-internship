@@ -1,9 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -30,9 +29,9 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./user-form.component.css']
 })
 export class UserFormComponent implements OnInit {
-  private readonly langService: LanguageService = inject(LanguageService);
-  private readonly authService: AuthService = inject(AuthService);
-  private readonly destroyRef: DestroyRef = inject(DestroyRef);
+  private readonly langService = inject(LanguageService);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   @Input() public user: any = {};
   @Input() public allRoles: string[] = [];
@@ -41,23 +40,22 @@ export class UserFormComponent implements OnInit {
   @Input() public errorMessage?: string;
   @Input() public hideRoles: boolean = false;
 
-  @Output() public readonly formSubmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() public readonly formSubmit = new EventEmitter<any>();
 
   public t: any = this.langService.t;
 
   public ngOnInit(): void {
     this.langService.currentLang$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((): void => {
+      .subscribe(() => {
         this.t = this.langService.t;
       });
   }
 
   public isSelfAdminLock(role: string): boolean {
-    const currentLoggedInUser: string = this.authService.username;
-    const isEditingSelf: boolean = this.isEditMode && this.user.login === currentLoggedInUser;
-    const isAdminRole: boolean = (role === 'ROLE_ADMIN');
-    return isEditingSelf && isAdminRole;
+    const currentLoggedInUser = this.authService.username;
+    const isEditingSelf = this.isEditMode && this.user.login === currentLoggedInUser;
+    return isEditingSelf && role === 'ROLE_ADMIN';
   }
 
   public onSubmit(): void {

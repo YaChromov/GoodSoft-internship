@@ -58,7 +58,7 @@
 
 :host ::ng-deep .p-inputtext,
 :host ::ng-deep .p-password input,
-:host ::ng-deep .p-datepicker input {
+:host ::ng-deep .p-datepicker-inputtext {
   width: 100% !important;
   padding: 10px !important;
   font-size: 14px !important;
@@ -75,14 +75,52 @@
   color: #888 !important;
 }
 
-:host ::ng-deep p-password,
 :host ::ng-deep .p-password,
-:host ::ng-deep p-datepicker,
-:host ::ng-deep .p-datepicker {
+:host ::ng-deep .p-datepicker:has(input) {
   display: flex !important;
   width: 100% !important;
+  position: relative;
 }
 
+:host ::ng-deep .p-datepicker-panel {
+  background: #ffffff !important;
+  border: 1px solid #a1a1a1 !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+  z-index: 1100 !important;
+}
+
+:host ::ng-deep .p-datepicker-header {
+  background: #f8f8f8 !important;
+  border-bottom: 1px solid #ccc !important;
+  padding: 8px !important;
+  color: #333 !important;
+}
+
+:host ::ng-deep .p-datepicker-title button {
+  color: #333 !important;
+  font-weight: bold !important;
+}
+
+:host ::ng-deep .p-datepicker table td > span {
+  width: 2.2rem !important;
+  height: 2.2rem !important;
+  border-radius: 0 !important;
+  color: #333 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .p-datepicker table td > span:hover {
+  background: #eee !important;
+}
+
+:host ::ng-deep .p-datepicker table td > span.p-highlight {
+  background: #ccc !important;
+  color: #000 !important;
+}
+
+:host ::ng-deep .p-password-toggle-mask-icon,
 :host ::ng-deep .p-password > i,
 :host ::ng-deep .p-password > svg {
   position: absolute;
@@ -91,6 +129,7 @@
   transform: translateY(-50%);
   cursor: pointer;
   color: #666;
+  z-index: 2;
 }
 
 :host ::ng-deep .p-datepicker-trigger {
@@ -101,7 +140,6 @@
   color: #555 !important;
   width: 40px !important;
 }
-
 
 .roles-container,
 .roles-selection {

@@ -57,8 +57,13 @@
     <div class="form-row">
       <div class="form-group">
         <label>{{ t.birthdayLabel }}</label>
-        <p-datepicker name="birthday" [(ngModel)]="user.birthday"
-                      dateFormat="yy-mm-dd" [showIcon]="true"></p-datepicker>
+        <p-datepicker name="birthday"
+                      [(ngModel)]="user.birthday"
+                      dateFormat="yy-mm-dd"
+                      [showIcon]="true"
+                      [showOtherMonths]="true"
+                      [selectOtherMonths]="true">
+        </p-datepicker>
       </div>
     </div>
 
