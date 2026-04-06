@@ -26,7 +26,8 @@
       <div class="roles-container">
         <div *ngFor="let role of allRoles" class="role-option">
           <p-checkbox name="roles" [value]="role" [(ngModel)]="user.roles"
-                      [inputId]="role" [disabled]="isEditMode && isSelfAdminLock(role)"></p-checkbox>
+                      [inputId]="role"
+                      [disabled]="isEditMode && isSelfAdminLock(role)"></p-checkbox>
           <label [for]="role" class="role-label">{{ role }}</label>
         </div>
       </div>
@@ -62,7 +63,7 @@
     </div>
 
     <button type="submit" class="btn-submit">
-      {{ isEditMode ? t.saveBtn : (hideRoles ? t.registerBtn : t.registerBtn) }}
+      {{ isEditMode ? t.saveBtn : (hideRoles ? t.registerBtn : t.createBtn) }}
     </button>
 
     <a [routerLink]="hideRoles ? '/login' : '/userlist'" class="back-link">
